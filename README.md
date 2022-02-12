@@ -22,7 +22,7 @@ Well to be honest I don't think you need another instance of Nedordle, but if yo
 - Install .NET 6.0 (TODO:tm: instructions)
 - Clone the repository: `git clone https://github.com/NedoProgrammer/Nedordle`
 - Compile the project: `cd Nedordle && dotnet build --configuration Release`
-- When finished, go to the build directory: `cd bin/Release/net6.0`
+- When finished, go to the build directory: `cd Nedordle.Cli/bin/Release/net6.0`
 - Run `./Nedordle.Cli interactive` and select `Download required data and configure the database`
 - Wait for the process to finish
 
