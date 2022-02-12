@@ -1,6 +1,3 @@
-using Octokit;
-using FileMode = System.IO.FileMode;
-
 namespace Nedordle.Cli;
 
 public class FileDownloader

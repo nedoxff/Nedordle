@@ -5,9 +5,10 @@ using Serilog;
 
 namespace Nedordle.Commands;
 
-public class ExtendedCommandModule: ApplicationCommandModule
+public class ExtendedCommandModule : ApplicationCommandModule
 {
     public Locale Locale { get; private set; }
+
     public override async Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
     {
         Log.Debug($"Trying to get locale for guild {ctx.Guild.Id}..");
@@ -22,6 +23,7 @@ public class ExtendedCommandModule: ApplicationCommandModule
             Log.Debug($"The language for this guild is \"{locale}\".");
             Locale = Locale.Locales[locale];
         }
+
         return true;
     }
 }

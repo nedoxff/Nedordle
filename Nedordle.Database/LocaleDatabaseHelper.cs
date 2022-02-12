@@ -1,4 +1,3 @@
-using System.Data.SQLite;
 using Nedordle.Core.Types;
 using Newtonsoft.Json;
 using Serilog;
@@ -10,7 +9,7 @@ public class LocaleDatabaseHelper
     public static void LoadLocales()
     {
         if (DatabaseController.Connection == null)
-        { 
+        {
             DatabaseController.Open("database.db");
             Log.Debug("Opened connection with \"database.db\".");
         }
@@ -26,6 +25,7 @@ public class LocaleDatabaseHelper
             Locale.Locales[name] = locale;
             Log.Debug($"Loaded locale \"{name}\".");
         }
+
         reader.Close();
         DatabaseController.Connection!.Close();
     }

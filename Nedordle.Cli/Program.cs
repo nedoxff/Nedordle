@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Nedordle.Cli.DatabaseConfiguration;
 using Nedordle.Core;
 using Spectre.Console;
@@ -19,24 +18,15 @@ app.Configure(s =>
 });
 app.Run(args);
 
-public class RunCommand: Command<RunCommand.RunCommandOptions>
+public class RunCommand : Command<RunCommand.RunCommandOptions>
 {
-    public class RunCommandOptions: CommandSettings
-    {
-
-        [CommandOption("--token")]
-        public string Token { get; set; }
-        
-        [CommandOption("--guild-id")]
-        public ulong GuildId { get; set; }
-    }
-
-
     public override int Execute([NotNull] CommandContext context, [NotNull] RunCommandOptions settings)
     {
         var config = new Config();
         if (string.IsNullOrEmpty(settings.Token) && settings.GuildId == 0)
+        {
             config.LoadFromEnvironment();
+        }
         else
         {
             if (settings.GuildId != 0 && string.IsNullOrEmpty(settings.Token))
@@ -49,9 +39,16 @@ public class RunCommand: Command<RunCommand.RunCommandOptions>
         Client.Start(config).ConfigureAwait(false).GetAwaiter().GetResult();
         return 0;
     }
+
+    public class RunCommandOptions : CommandSettings
+    {
+        [CommandOption("--token")] public string Token { get; set; }
+
+        [CommandOption("--guild-id")] public ulong GuildId { get; set; }
+    }
 }
 
-public class InteractiveCommand: Command
+public class InteractiveCommand : Command
 {
     public override int Execute(CommandContext context)
     {
@@ -83,7 +80,7 @@ public class InteractiveCommand: Command
                 ulong guildId = 0;
                 if (update)
                     guildId = AnsiConsole.Ask<ulong>("What is the ID of that guild?");
-                
+
                 AnsiConsole.Clear();
                 var config = new Config
                 {
@@ -101,6 +98,7 @@ public class InteractiveCommand: Command
                 Environment.Exit(0);
                 break;
         }
+
         return 0;
     }
 }

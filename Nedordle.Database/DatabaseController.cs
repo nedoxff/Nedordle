@@ -1,4 +1,3 @@
-using System.Data;
 using System.Data.SQLite;
 
 namespace Nedordle.Database;
@@ -7,9 +6,16 @@ public class DatabaseController
 {
     public static SQLiteConnection? Connection;
 
-    public static void Create(string filename) => SQLiteConnection.CreateFile(filename);
+    public static void Create(string filename)
+    {
+        SQLiteConnection.CreateFile(filename);
+    }
 
-    public static void Open(string file) => Connection = new SQLiteConnection($"Data Source = {file}");
+    public static void Open(string file)
+    {
+        Connection = new SQLiteConnection($"Data Source = {file}");
+    }
+
     private static SQLiteCommand CreateCommand(string query, params object[] args)
     {
         Connection.Open();
@@ -33,7 +39,7 @@ public class DatabaseController
         Connection.Close();
         return (T?) obj;
     }
-    
+
     public static SQLiteDataReader ExecuteReader(string query, params object[] args)
     {
         var command = CreateCommand(query, args);
@@ -45,12 +51,15 @@ public class DatabaseController
     {
         var result = new List<string>();
         var reader = ExecuteReader("select name from sqlite_master where type = 'table' order by 1");
-        while(reader.Read())
+        while (reader.Read())
             result.Add(reader.GetString(0));
         reader.Close();
         Connection.Close();
         return result;
     }
 
-    public static void DropTable(string name) => ExecuteNonQuery($"drop table if exists '{name}'");
+    public static void DropTable(string name)
+    {
+        ExecuteNonQuery($"drop table if exists '{name}'");
+    }
 }
