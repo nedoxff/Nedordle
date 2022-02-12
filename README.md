@@ -45,4 +45,5 @@ After that, you should get a lot of messages from the Discord API (DSharpPlus), 
 ## Credits
 
 **Josh Wardle** for creating Wordle!
+
 **The DSharpPlus team** for creating DSharpPlus!
