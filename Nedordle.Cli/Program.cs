@@ -12,8 +12,10 @@ app.Configure(s =>
         .WithDescription("Enter the interactive menu");
     s.SetExceptionHandler(e =>
     {
-        AnsiConsole.MarkupLine("[bold red]\nAn exception occured while running the app.\n[/]");
-        AnsiConsole.WriteException(e);
+        AnsiConsole.MarkupLine($"[bold red]An exception occured while running the app: {e.Message}[/]");
+        var show = AnsiConsole.Confirm("Would you like to see the full exception?");
+        if(show)
+            AnsiConsole.WriteException(e);
     });
 });
 app.Run(args);

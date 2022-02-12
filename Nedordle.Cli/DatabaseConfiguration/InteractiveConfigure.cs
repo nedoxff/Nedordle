@@ -198,7 +198,7 @@ public static class InteractiveConfigure
                 transaction.Commit();
                 DatabaseController.Connection.Close();
 
-                AnsiConsole.MarkupLine($"[green italic]{indexing.Value}[/] words were successfully pushed.");
+                AnsiConsole.MarkupLine($"[green italic]{indexing.Value}[/] words were successfully imported.");
             });
         }
 
