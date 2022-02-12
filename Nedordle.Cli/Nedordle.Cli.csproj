@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="Octokit" Version="0.50.0" />
+      <PackageReference Include="Spectre.Console" Version="0.43.1-preview.0.24" />
+      <PackageReference Include="Spectre.Console.ImageSharp" Version="0.43.1-preview.0.24" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nedordle.Core\Nedordle.Core.csproj" />
+      <ProjectReference Include="..\Nedordle.UptimeServer\Nedordle.UptimeServer.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.Cli", "Nedordle.Cli\Nedordle.Cli.csproj", "{93E222AE-39F4-44D1-8CEE-2DBAA6CDE8D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.Core", "Nedordle.Core\Nedordle.Core.csproj", "{5E65F345-6C5D-4DF9-A09B-BB033689ACA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.UptimeServer", "Nedordle.UptimeServer\Nedordle.UptimeServer.csproj", "{C7BBE260-D01D-436A-95B2-95260CE0AFAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.Commands", "Nedordle.Commands\Nedordle.Commands.csproj", "{23DC4CF2-D391-41C6-9B9C-A9A41C070B8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.Database", "Nedordle.Database\Nedordle.Database.csproj", "{D31B66B8-D20A-47CB-BFFA-6A3C4231E0B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.Helpers", "Nedordle.Helpers\Nedordle.Helpers.csproj", "{8891D88C-E380-4DB9-933A-F433807FAC04}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93E222AE-39F4-44D1-8CEE-2DBAA6CDE8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93E222AE-39F4-44D1-8CEE-2DBAA6CDE8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93E222AE-39F4-44D1-8CEE-2DBAA6CDE8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93E222AE-39F4-44D1-8CEE-2DBAA6CDE8D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E65F345-6C5D-4DF9-A09B-BB033689ACA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E65F345-6C5D-4DF9-A09B-BB033689ACA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E65F345-6C5D-4DF9-A09B-BB033689ACA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E65F345-6C5D-4DF9-A09B-BB033689ACA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7BBE260-D01D-436A-95B2-95260CE0AFAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7BBE260-D01D-436A-95B2-95260CE0AFAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7BBE260-D01D-436A-95B2-95260CE0AFAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7BBE260-D01D-436A-95B2-95260CE0AFAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23DC4CF2-D391-41C6-9B9C-A9A41C070B8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23DC4CF2-D391-41C6-9B9C-A9A41C070B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23DC4CF2-D391-41C6-9B9C-A9A41C070B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23DC4CF2-D391-41C6-9B9C-A9A41C070B8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D31B66B8-D20A-47CB-BFFA-6A3C4231E0B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D31B66B8-D20A-47CB-BFFA-6A3C4231E0B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D31B66B8-D20A-47CB-BFFA-6A3C4231E0B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D31B66B8-D20A-47CB-BFFA-6A3C4231E0B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8891D88C-E380-4DB9-933A-F433807FAC04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8891D88C-E380-4DB9-933A-F433807FAC04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8891D88C-E380-4DB9-933A-F433807FAC04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8891D88C-E380-4DB9-933A-F433807FAC04}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
