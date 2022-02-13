@@ -17,7 +17,7 @@ public class GuildDeleted
 
         var channel = guild.SystemChannel == null ? guild.GetDefaultChannel() : guild.SystemChannel;
         await channel.SendMessageAsync(embed);
-        
+
         GuildDatabaseHelper.RemoveGuild(guild.Id);
     }
 }

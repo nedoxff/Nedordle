@@ -49,20 +49,22 @@ public static class InteractiveConfigure
                     "The database already exists. Would you like to recreate it? (THIS WILL ERASE GUILDS AND PLAYERS AS WELL!)");
             if (recreate)
             {
-                if(DatabaseController.Connection != null)
+                if (DatabaseController.Connection != null)
                     DatabaseController.Connection.Close();
                 File.Delete("database.db");
                 exists = false;
             }
+
             AnsiConsole.Clear();
         }
+
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Moon)
             .Start("Configuring database file..", ctx =>
             {
                 if (!exists)
                     DatabaseController.Create("database.db");
-                
+
                 DatabaseController.Open("database.db");
 
                 if (exists)
@@ -302,10 +304,10 @@ create unique index locales_id_uindex
 
     private class LanguageInfo
     {
-        public string DictionaryFile = null!;
-        public string FullName = null!;
-        public string NativeName = null!;
-        public string ShortName = null!;
-        public string Flag = null!;
+        public readonly string DictionaryFile = null!;
+        public readonly string Flag = null!;
+        public readonly string FullName = null!;
+        public readonly string NativeName = null!;
+        public readonly string ShortName = null!;
     }
 }

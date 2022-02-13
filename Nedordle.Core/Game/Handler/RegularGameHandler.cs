@@ -2,7 +2,7 @@ using DSharpPlus.Entities;
 
 namespace Nedordle.Core.Game.Handler;
 
-public class RegularGameHandler: GameHandler
+public class RegularGameHandler : GameHandler
 {
     public override Task OnCreate()
     {

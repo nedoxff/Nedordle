@@ -6,7 +6,7 @@ public static class RandomExtensions
 
     public static Random New()
     {
-        return new(Guid.NewGuid().GetHashCode());
+        return new Random(Guid.NewGuid().GetHashCode());
     }
 
     public static T NextElement<T>(this Random random, IEnumerable<T> enumerable)

@@ -5,9 +5,14 @@ namespace Nedordle.Helpers.Types;
 public class Locale
 {
     public static readonly Dictionary<string, Locale> Locales = new();
+    public string Flag = null!;
+
+    public string FullName = null!;
 
     [JsonProperty(PropertyName = "Metrics_ms")]
     public string Milliseconds = null!;
+
+    public string NativeName = null!;
 
     // ReSharper disable once FieldCanBeMadeReadOnly.Global
     public string Ping = null!;
@@ -24,8 +29,5 @@ public class Locale
     [JsonProperty(PropertyName = "Ping_MessageLatency")]
     public string PingMessageLatency = null!;
 
-    public string FullName = null!;
     public string ShortName = null!;
-    public string NativeName = null!;
-    public string Flag = null!;
 }

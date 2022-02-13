@@ -8,14 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-      <PackageReference Include="Spectre.Console" Version="0.43.1-preview.0.24" />
-      <PackageReference Include="Spectre.Console.ImageSharp" Version="0.43.1-preview.0.24" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+        <PackageReference Include="Spectre.Console" Version="0.43.1-preview.0.24"/>
+        <PackageReference Include="Spectre.Console.ImageSharp" Version="0.43.1-preview.0.24"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Nedordle.Core\Nedordle.Core.csproj" />
-      <ProjectReference Include="..\Nedordle.UptimeServer\Nedordle.UptimeServer.csproj" />
+        <ProjectReference Include="..\Nedordle.Core\Nedordle.Core.csproj"/>
+        <ProjectReference Include="..\Nedordle.UptimeServer\Nedordle.UptimeServer.csproj"/>
     </ItemGroup>
 
 </Project>

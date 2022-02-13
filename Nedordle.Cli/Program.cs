@@ -14,7 +14,7 @@ app.Configure(s =>
     {
         AnsiConsole.MarkupLine($"[bold red]An exception occured while running the app: {e.Message}[/]");
         var show = AnsiConsole.Confirm("Would you like to see the full exception?");
-        if(show)
+        if (show)
             AnsiConsole.WriteException(e);
     });
 });

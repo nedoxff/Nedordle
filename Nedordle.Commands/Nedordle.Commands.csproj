@@ -7,15 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-01067" />
-        <PackageReference Include="DSharpPlus.Interactivity" Version="4.2.0-nightly-01067" />
-        <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0-nightly-01067" />
-        <PackageReference Include="Serilog" Version="2.11.0-dev-01380" />
+        <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-01067"/>
+        <PackageReference Include="DSharpPlus.Interactivity" Version="4.2.0-nightly-01067"/>
+        <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0-nightly-01067"/>
+        <PackageReference Include="Serilog" Version="2.11.0-dev-01380"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Nedordle.Database\Nedordle.Database.csproj" />
-        <ProjectReference Include="..\Nedordle.Helpers\Nedordle.Helpers.csproj" />
+        <ProjectReference Include="..\Nedordle.Database\Nedordle.Database.csproj"/>
+        <ProjectReference Include="..\Nedordle.Helpers\Nedordle.Helpers.csproj"/>
     </ItemGroup>
 
 </Project>

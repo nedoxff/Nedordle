@@ -1,19 +1,13 @@
-using System.Reflection.Metadata;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Nedordle.Database;
 using Nedordle.Helpers;
+using Nedordle.Helpers.Types;
 
 namespace Nedordle.Commands.General;
 
-public class Troubleshoot: ExtendedCommandModule
+public class Troubleshoot : ExtendedCommandModule
 {
-    private enum ProblemType
-    {
-        GuildNotInDatabase,
-        InvalidLocale
-    }
-
     [SlashCommand("troubleshoot", "The bot doesn't work as intended? Try running this command.")]
     public async Task Execute(InteractionContext ctx)
     {
@@ -25,10 +19,10 @@ public class Troubleshoot: ExtendedCommandModule
             .Build();
 
         var problems = new List<ProblemType>();
-        
+
         var guildExists = GuildDatabaseHelper.GuildExists(ctx.Guild.Id);
-        task.Log(guildExists ? "The server is in the database.": "The server is not in the database!");
-        if(!guildExists)
+        task.Log(guildExists ? "The server is in the database." : "The server is not in the database!");
+        if (!guildExists)
             problems.Add(ProblemType.GuildNotInDatabase);
         await task.FinishTask();
 
@@ -38,12 +32,15 @@ public class Troubleshoot: ExtendedCommandModule
             task.Log("No locale detected, the server is not in the database.");
             problems.Add(ProblemType.InvalidLocale);
         }
-        else if (!Helpers.Types.Locale.Locales.ContainsKey(locale))
+        else if (!Locale.Locales.ContainsKey(locale))
         {
             task.Log("Invalid locale \"{Locale}\".", locale);
             problems.Add(ProblemType.InvalidLocale);
         }
-        else task.Log("Valid locale detected. (\"{Locale}\")", locale);
+        else
+        {
+            task.Log("Valid locale detected. (\"{Locale}\")", locale);
+        }
 
         await task.FinishTask();
 
@@ -54,7 +51,7 @@ public class Troubleshoot: ExtendedCommandModule
             var followUp = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
                 .AddEmbed(SimpleDiscordEmbed.Colored(DiscordColor.Gold, "", "Fixing problems..")));
 
-            foreach(var problem in problems)
+            foreach (var problem in problems)
                 FixProblem(ctx, problem);
 
             await ctx.EditFollowupAsync(followUp.Id, new DiscordWebhookBuilder()
@@ -80,5 +77,11 @@ public class Troubleshoot: ExtendedCommandModule
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
+    }
+
+    private enum ProblemType
+    {
+        GuildNotInDatabase,
+        InvalidLocale
     }
 }
