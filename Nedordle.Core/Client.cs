@@ -1,5 +1,6 @@
 using System.Reflection;
 using DSharpPlus;
+using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.Logging;
 using Nedordle.Commands.General;
@@ -17,6 +18,7 @@ public class Client
 
     private static readonly string[] Files = {"latest_log.txt", "latest_log_debug.txt"};
 
+    //TODO: add command handlers
     public static async Task Start(Config config)
     {
         InitializeLogger();
@@ -29,11 +31,10 @@ public class Client
             LoggerFactory = logFactory,
             MinimumLogLevel = LogLevel.Debug
         });
+        _client.GuildCreated += GuildCreated.OnGuildCreated;
 
         var slash = _client.UseSlashCommands();
         slash.SlashCommandErrored += SlashCommandErrored.OnSlashCommandErrored;
-        //TODO: add command handlers
-        //slash.SlashCommandErrored += ClientEventHandler.OnSlashCommandErrored;
         slash.RegisterCommands(Assembly.GetAssembly(typeof(Ping)), ulong.Parse(config["GUILD_ID"]));
         Log.Information("Initialized slash commands.");
 

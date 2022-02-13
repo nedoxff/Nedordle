@@ -4,7 +4,7 @@ namespace Nedordle.Helpers;
 
 public class SimpleDiscordEmbed
 {
-    private static DiscordEmbedBuilder Colored(DiscordColor color, string title = "", string description = "",
+    public static DiscordEmbedBuilder Colored(DiscordColor color, string title = "", string description = "",
         string footer = "")
     {
         return new DiscordEmbedBuilder()

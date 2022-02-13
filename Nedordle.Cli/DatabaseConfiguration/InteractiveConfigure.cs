@@ -41,13 +41,28 @@ public static class InteractiveConfigure
 
     private static void ConfigureDatabase()
     {
+        var exists = File.Exists("database.db");
+        if (exists)
+        {
+            var recreate =
+                AnsiConsole.Confirm(
+                    "The database already exists. Would you like to recreate it? (THIS WILL ERASE GUILDS AND PLAYERS AS WELL!)");
+            if (recreate)
+            {
+                if(DatabaseController.Connection != null)
+                    DatabaseController.Connection.Close();
+                File.Delete("database.db");
+                exists = false;
+            }
+            AnsiConsole.Clear();
+        }
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Moon)
             .Start("Configuring database file..", ctx =>
             {
-                var exists = File.Exists("database.db");
                 if (!exists)
                     DatabaseController.Create("database.db");
+                
                 DatabaseController.Open("database.db");
 
                 if (exists)
