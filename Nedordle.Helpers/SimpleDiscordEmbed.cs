@@ -21,11 +21,11 @@ public class SimpleDiscordEmbed
 
     public static DiscordEmbedBuilder Warning(string description, string footer = "", string title = "Warning!")
     {
-        return Colored(DiscordColor.DarkRed, title, description, footer);
+        return Colored(DiscordColor.Gold, title, description, footer);
     }
 
     public static DiscordEmbedBuilder Success(string description, string footer = "", string title = "Success!")
     {
-        return Colored(DiscordColor.DarkRed, title, description, footer);
+        return Colored(DiscordColor.DarkGreen, title, description, footer);
     }
 }

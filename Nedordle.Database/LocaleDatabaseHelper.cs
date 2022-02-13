@@ -1,4 +1,4 @@
-using Nedordle.Core.Types;
+using Nedordle.Helpers.Types;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -11,7 +11,7 @@ public class LocaleDatabaseHelper
         if (DatabaseController.Connection == null)
         {
             DatabaseController.Open("database.db");
-            Log.Debug("Opened connection with \"database.db\".");
+            Log.Debug("Opened connection with \"database.db\"");
         }
 
         var reader = DatabaseController.ExecuteReader("select * from locales");
@@ -23,7 +23,7 @@ public class LocaleDatabaseHelper
             if (locale == null)
                 throw new Exception($"Failed to parse locale \"{name}\".");
             Locale.Locales[name] = locale;
-            Log.Debug($"Loaded locale \"{name}\".");
+            Log.Debug("Loaded locale \"{Name}\"", name);
         }
 
         reader.Close();

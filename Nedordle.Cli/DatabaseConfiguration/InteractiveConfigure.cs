@@ -1,8 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
-using Nedordle.Core.Types;
 using Nedordle.Database;
 using Nedordle.Helpers;
+using Nedordle.Helpers.Types;
 using Newtonsoft.Json;
 using Spectre.Console;
 
@@ -12,8 +12,8 @@ public static class InteractiveConfigure
 {
     public const string DataPath = "https://github.com/NedoProgrammer/NedordleData/archive/refs/heads/main.zip";
 
-    private static string _tempFolder;
-    private static string _dataFolder;
+    private static string _tempFolder = "";
+    private static string _dataFolder = "";
 
     public static void Configure()
     {
@@ -186,9 +186,10 @@ public static class InteractiveConfigure
 
                 CreateLanguageTable(info.ShortName);
                 DatabaseController.ExecuteNonQuery(
-                    $"insert into languages(short, \"full\", native) values(\"{info.ShortName}\", \"{info.FullName}\", \"{info.NativeName}\")");
+                    $"insert into languages(short, \"full\", native, flag) values(\"{info.ShortName}\", \"{info.FullName}\", \"{info.NativeName}\", \"{info.Flag}\")");
 
-                DatabaseController.Connection.Open();
+                DatabaseController.ThrowIfNull();
+                DatabaseController.Connection!.Open();
                 var transaction = DatabaseController.Connection.BeginTransaction();
                 var command = DatabaseController.Connection.CreateCommand();
                 command.CommandText =
@@ -268,7 +269,8 @@ create unique index guilds_id_uindex
         constraint languages_pk
             primary key,
     ""full"" text not null,
-        native text not null
+        native text not null,
+        flag text not null
             );
 
         create unique index languages_full_uindex
@@ -278,7 +280,10 @@ create unique index guilds_id_uindex
         on languages (native);
 
         create unique index languages_short_uindex
-        on languages (short);");
+        on languages (short);
+        
+        create unique index languages_flag_uindex
+        on languages (flag);");
     }
 
     private static void CreateLocalesTable()
@@ -297,9 +302,10 @@ create unique index locales_id_uindex
 
     private class LanguageInfo
     {
-        public string DictionaryFile;
-        public string FullName;
-        public string NativeName;
-        public string ShortName;
+        public string DictionaryFile = null!;
+        public string FullName = null!;
+        public string NativeName = null!;
+        public string ShortName = null!;
+        public string Flag = null!;
     }
 }

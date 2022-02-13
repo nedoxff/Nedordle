@@ -16,9 +16,16 @@ public class DatabaseController
         Connection = new SQLiteConnection($"Data Source = {file}");
     }
 
+    public static void ThrowIfNull()
+    {
+        if (Connection == null)
+            throw new Exception("The connection with the database was not opened!");
+    }
+
     private static SQLiteCommand CreateCommand(string query, params object[] args)
     {
-        Connection.Open();
+        ThrowIfNull();
+        Connection!.Open();
         var command = Connection.CreateCommand();
         command.CommandText = string.Format(query, args);
         return command;
@@ -26,17 +33,19 @@ public class DatabaseController
 
     public static int ExecuteNonQuery(string query, params object[] args)
     {
+        ThrowIfNull();
         var command = CreateCommand(query, args);
         var changed = command.ExecuteNonQuery();
-        Connection.Close();
+        Connection!.Close();
         return changed;
     }
 
     public static T? ExecuteScalar<T>(string query, params object[] args)
     {
+        ThrowIfNull();
         var command = CreateCommand(query, args);
         var obj = command.ExecuteScalar();
-        Connection.Close();
+        Connection!.Close();
         return (T?) obj;
     }
 
@@ -49,12 +58,13 @@ public class DatabaseController
 
     public static List<string> GetTables()
     {
+        ThrowIfNull();
         var result = new List<string>();
         var reader = ExecuteReader("select name from sqlite_master where type = 'table' order by 1");
         while (reader.Read())
             result.Add(reader.GetString(0));
         reader.Close();
-        Connection.Close();
+        Connection!.Close();
         return result;
     }
 

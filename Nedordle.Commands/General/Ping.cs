@@ -7,7 +7,7 @@ namespace Nedordle.Commands.General;
 
 public class Ping : ExtendedCommandModule
 {
-    private readonly DiscordColor[] Colors =
+    private readonly DiscordColor[] _colors =
     {
         DiscordColor.Green, DiscordColor.DarkGreen, DiscordColor.Yellow, DiscordColor.Orange, DiscordColor.Red,
         DiscordColor.DarkRed
@@ -28,10 +28,10 @@ public class Ping : ExtendedCommandModule
         var difference = (DateTime.Now - time).Milliseconds;
 
         var color = DiscordColor.Black;
-        for (var i = 0; i < Colors.Length; i++)
+        for (var i = 0; i < _colors.Length; i++)
             if (difference >= 150 * i && difference <= 150 * (i + 1))
             {
-                color = Colors[i];
+                color = _colors[i];
                 break;
             }
 

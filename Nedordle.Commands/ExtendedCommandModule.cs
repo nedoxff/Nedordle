@@ -1,29 +1,34 @@
 using DSharpPlus.SlashCommands;
-using Nedordle.Core.Types;
 using Nedordle.Database;
+using Nedordle.Helpers.Types;
 using Serilog;
 
 namespace Nedordle.Commands;
 
 public class ExtendedCommandModule : ApplicationCommandModule
 {
-    public Locale Locale { get; private set; }
+    public Locale Locale { get; private set; } = null!;
 
-    public override async Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
+    public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
     {
-        Log.Debug($"Trying to get locale for guild {ctx.Guild.Id}..");
+        Log.Debug("Trying to get locale for guild {GuildId}..", ctx.Guild.Id);
         var locale = LocaleDatabaseHelper.GetLocale(ctx.Guild.Id);
         if (string.IsNullOrEmpty(locale))
         {
-            Log.Debug("Guild was not in the database. Using \"en\".");
+            Log.Debug("Guild was not in the database, using \"en\"");
+            Locale = Locale.Locales["en"];
+        }
+        else if (!Locale.Locales.ContainsKey(locale))
+        {
+            Log.Debug("Invalid locale \"{Locale}\", using \"en\"", locale);
             Locale = Locale.Locales["en"];
         }
         else
         {
-            Log.Debug($"The language for this guild is \"{locale}\".");
+            Log.Debug("The language for this guild is \"{Locale}\"", locale);
             Locale = Locale.Locales[locale];
         }
 
-        return true;
+        return Task.FromResult(true);
     }
 }

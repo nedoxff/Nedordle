@@ -1,6 +1,6 @@
 using System.Reflection;
 using DSharpPlus;
-using DSharpPlus.EventArgs;
+using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.Logging;
 using Nedordle.Commands.General;
@@ -32,11 +32,15 @@ public class Client
             MinimumLogLevel = LogLevel.Debug
         });
         _client.GuildCreated += GuildCreated.OnGuildCreated;
+        _client.GuildDeleted += GuildDeleted.OnGuildDeleted;
 
         var slash = _client.UseSlashCommands();
         slash.SlashCommandErrored += SlashCommandErrored.OnSlashCommandErrored;
         slash.RegisterCommands(Assembly.GetAssembly(typeof(Ping)), ulong.Parse(config["GUILD_ID"]));
-        Log.Information("Initialized slash commands.");
+        Log.Information("Initialized slash commands");
+
+        _client.UseInteractivity();
+        Log.Information("Initialized interactivity");
 
         Log.Information("Loading locales..");
         LocaleDatabaseHelper.LoadLocales();
@@ -60,6 +64,6 @@ public class Client
             .WriteTo.File("latest_log_debug.txt", LogEventLevel.Debug)
             .MinimumLevel.Debug()
             .CreateLogger();
-        Log.Information("Logger initialized.");
+        Log.Information("Logger initialized");
     }
 }

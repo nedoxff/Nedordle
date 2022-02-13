@@ -1,4 +1,4 @@
-namespace Nedordle.Core.Types;
+namespace Nedordle.Helpers.Types;
 
 public struct Error
 {

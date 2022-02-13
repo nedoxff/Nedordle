@@ -22,6 +22,7 @@ app.Run(args);
 
 public class RunCommand : Command<RunCommand.RunCommandOptions>
 {
+    // ReSharper disable twice RedundantNullableFlowAttribute
     public override int Execute([NotNull] CommandContext context, [NotNull] RunCommandOptions settings)
     {
         var config = new Config();
@@ -44,7 +45,7 @@ public class RunCommand : Command<RunCommand.RunCommandOptions>
 
     public class RunCommandOptions : CommandSettings
     {
-        [CommandOption("--token")] public string Token { get; set; }
+        [CommandOption("--token")] public string Token { get; set; } = "";
 
         [CommandOption("--guild-id")] public ulong GuildId { get; set; }
     }

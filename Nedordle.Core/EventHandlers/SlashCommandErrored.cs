@@ -2,7 +2,7 @@ using System.Globalization;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
-using Nedordle.Core.Types;
+using Nedordle.Helpers.Types;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -38,7 +38,7 @@ public class SlashCommandErrored
         var serialized = JsonConvert.SerializeObject(deserialized, Formatting.Indented);
         await File.WriteAllTextAsync("errors.json", serialized);
 
-        Log.Error($"An error occured while executing a slash command. Error ID: {guid}");
+        Log.Error("An error occured while executing a slash command. Error ID: {ErrorGuid}", guid);
 
         await e.Context.FollowUpAsync(new DiscordFollowupMessageBuilder()
             .WithContent(

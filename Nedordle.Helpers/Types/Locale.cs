@@ -1,25 +1,31 @@
 using Newtonsoft.Json;
 
-namespace Nedordle.Core.Types;
+namespace Nedordle.Helpers.Types;
 
 public class Locale
 {
-    public static Dictionary<string, Locale> Locales = new();
+    public static readonly Dictionary<string, Locale> Locales = new();
 
     [JsonProperty(PropertyName = "Metrics_ms")]
-    public string Milliseconds;
+    public string Milliseconds = null!;
 
-    public string Ping;
+    // ReSharper disable once FieldCanBeMadeReadOnly.Global
+    public string Ping = null!;
 
     [JsonProperty(PropertyName = "Ping_AfterMessages")]
-    public List<string> PingAfterMessages;
+    public List<string> PingAfterMessages = null!;
 
     [JsonProperty(PropertyName = "Ping_BeforeMessages")]
-    public List<string> PingBeforeMessages;
+    public List<string> PingBeforeMessages = null!;
 
     [JsonProperty(PropertyName = "Ping_ClientLatency")]
-    public string PingClientLatency;
+    public string PingClientLatency = null!;
 
     [JsonProperty(PropertyName = "Ping_MessageLatency")]
-    public string PingMessageLatency;
+    public string PingMessageLatency = null!;
+
+    public string FullName = null!;
+    public string ShortName = null!;
+    public string NativeName = null!;
+    public string Flag = null!;
 }
