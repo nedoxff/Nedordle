@@ -20,6 +20,8 @@
     <ItemGroup>
         <ProjectReference Include="..\Nedordle.Commands\Nedordle.Commands.csproj"/>
         <ProjectReference Include="..\Nedordle.Database\Nedordle.Database.csproj"/>
+        <ProjectReference Include="..\Nedordle.Drawer\Nedordle.Drawer.csproj"/>
+        <ProjectReference Include="..\Nedordle.UptimeServer\Nedordle.UptimeServer.csproj"/>
     </ItemGroup>
 
 </Project>

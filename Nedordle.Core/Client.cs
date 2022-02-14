@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Nedordle.Commands.General;
 using Nedordle.Core.EventHandlers;
 using Nedordle.Database;
+using Nedordle.UptimeServer;
 using Serilog;
 using Serilog.Events;
 
@@ -22,6 +23,9 @@ public class Client
     public static async Task Start(Config config)
     {
         InitializeLogger();
+        CheckResources();
+        UptimeListener.Start();
+
         var logFactory = new LoggerFactory().AddSerilog();
         _client = new DiscordClient(new DiscordConfiguration
         {
@@ -65,5 +69,20 @@ public class Client
             .MinimumLevel.Debug()
             .CreateLogger();
         Log.Information("Logger initialized");
+    }
+
+    private static void CheckResources()
+    {
+        Log.Information("Checking resources..");
+        ThrowIfDoesNotExist("database.db");
+        ThrowIfDoesNotExist("Resources");
+        ThrowIfDoesNotExist("Resources/wordle_font.ttf");
+        Log.Information("All fine!");
+    }
+
+    private static void ThrowIfDoesNotExist(string file)
+    {
+        if (!Directory.Exists(file) && !File.Exists(file))
+            throw new FileNotFoundException($"Requested resource \"{file}\" was not found.");
     }
 }

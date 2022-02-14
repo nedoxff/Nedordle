@@ -1,3 +1,5 @@
+// ReSharper disable NotAccessedField.Global
+
 namespace Nedordle.Helpers.Types;
 
 public struct Error

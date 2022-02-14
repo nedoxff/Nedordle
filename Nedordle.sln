@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.Database", "Nedord
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.Helpers", "Nedordle.Helpers\Nedordle.Helpers.csproj", "{8891D88C-E380-4DB9-933A-F433807FAC04}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nedordle.Drawer", "Nedordle.Drawer\Nedordle.Drawer.csproj", "{4430E09B-0802-452C-8904-138C322308E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{8891D88C-E380-4DB9-933A-F433807FAC04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8891D88C-E380-4DB9-933A-F433807FAC04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8891D88C-E380-4DB9-933A-F433807FAC04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4430E09B-0802-452C-8904-138C322308E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4430E09B-0802-452C-8904-138C322308E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4430E09B-0802-452C-8904-138C322308E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4430E09B-0802-452C-8904-138C322308E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -7,7 +7,7 @@ using Nedordle.Helpers.Types;
 
 namespace Nedordle.Commands.Guild;
 
-public class LocaleSelect : ExtendedCommandModule
+public class SelectLocale : ExtendedCommandModule
 {
     [SlashCommand("locale", "Set the language of the bot on this server.")]
     public async Task Execute(InteractionContext ctx)
@@ -20,10 +20,10 @@ public class LocaleSelect : ExtendedCommandModule
         }
 
         await ctx.CreateResponseAsync(SimpleDiscordEmbed.Colored(DiscordColor.Gold,
-            "Select the new locale in the dropdown menu below."));
+            Locale.SelectLocaleMainText));
         var builder = new DiscordFollowupMessageBuilder()
             .WithContent(DiscordEmoji.FromName(ctx.Client, ":point_down:"))
-            .AddComponents(new DiscordSelectComponent("locale_select", "Select the new language..", GetLocales()));
+            .AddComponents(new DiscordSelectComponent("locale_select", Locale.SelectLocalePlaceholder, GetLocales()));
         var message = await ctx.FollowUpAsync(builder);
 
         var result = await message.WaitForSelectAsync(ctx.User, "locale_select");
@@ -38,8 +38,8 @@ public class LocaleSelect : ExtendedCommandModule
             await message.DeleteAsync();
             GuildDatabaseHelper.SetLocale(ctx.Guild.Id, result.Result.Values[0]);
             await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Success(
-                    $"Successfully changed the server's language to `{result.Result.Values[0]}`.")));
+                .AddEmbed(
+                    SimpleDiscordEmbed.Success(string.Format(Locale.SelectLocaleSuccess, result.Result.Values[0]))));
         }
     }
 

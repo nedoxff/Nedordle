@@ -64,7 +64,7 @@ public class Troubleshoot : ExtendedCommandModule
         }
     }
 
-    private void FixProblem(InteractionContext ctx, ProblemType type)
+    private void FixProblem(BaseContext ctx, ProblemType type)
     {
         switch (type)
         {

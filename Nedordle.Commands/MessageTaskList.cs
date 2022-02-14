@@ -40,8 +40,6 @@ public class MessageTaskList
 {
     private readonly DiscordEmbedBuilder _builder;
     private readonly InteractionContext _context;
-    private bool _finished;
-    private int _index;
 
     private readonly Dictionary<MessageTaskState, char> _stateConverter = new()
     {
@@ -52,6 +50,8 @@ public class MessageTaskList
 
     private readonly string _successDescription;
     private readonly Dictionary<string, MessageTask> _tasks;
+    private bool _finished;
+    private int _index;
 
     public MessageTaskList(DiscordEmbedBuilder builder, Dictionary<string, MessageTask> tasks, InteractionContext ctx,
         string successDescription = "")
@@ -127,8 +127,8 @@ public class MessageTaskListBuilder
 {
     private readonly DiscordEmbedBuilder _builder = new();
     private readonly InteractionContext _context;
-    private string _successDescription = "";
     private readonly Dictionary<string, MessageTask> _tasks = new();
+    private string _successDescription = "";
 
     public MessageTaskListBuilder(InteractionContext context)
     {
@@ -161,6 +161,6 @@ public class MessageTaskListBuilder
 
     public MessageTaskList Build()
     {
-        return new(_builder, _tasks, _context, _successDescription);
+        return new MessageTaskList(_builder, _tasks, _context, _successDescription);
     }
 }

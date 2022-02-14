@@ -7,7 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Serilog" Version="2.11.0-dev-01380"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="2.0.0"/>
+        <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14"/>
     </ItemGroup>
 
 </Project>

@@ -21,10 +21,28 @@ public static class InteractiveConfigure
 
         ConfigureDatabase();
         DownloadRepository();
+        CopyResources();
         ConfigureLocales();
         ConfigureLanguages();
 
         Cleanup();
+    }
+
+    private static void CopyResources()
+    {
+        AnsiConsole.Status().Spinner(Spinner.Known.Dots2).Start("Creating Resources folder..", ctx =>
+        {
+            if (Directory.Exists("Resources"))
+                DirectoryExtensions.DeleteWithFiles("Resources");
+            Directory.CreateDirectory("Resources");
+            var resourcesFolder = Path.Combine(_dataFolder, "Resources");
+            foreach (var file in Directory.GetFiles(resourcesFolder))
+            {
+                var filename = Path.GetFileName(file);
+                ctx.Status($"Copying {filename}..");
+                File.Copy(file, Path.Combine(Environment.CurrentDirectory, "Resources", filename));
+            }
+        });
     }
 
     private static void Preconfigure()
@@ -103,7 +121,7 @@ public static class InteractiveConfigure
                 var locale = JsonConvert.DeserializeObject<Locale>(File.ReadAllText(file));
                 var noIndentation = JsonConvert.SerializeObject(locale, Formatting.None);
                 DatabaseController.ExecuteNonQuery("insert into locales(id, data) values('{0}', '{1}')",
-                    Path.GetFileNameWithoutExtension(file), noIndentation);
+                    Path.GetFileNameWithoutExtension(file), noIndentation.Replace("'", "''"));
             }
         });
     }

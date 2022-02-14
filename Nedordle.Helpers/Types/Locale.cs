@@ -1,33 +1,47 @@
 using Newtonsoft.Json;
 
+// ReSharper disable UnassignedField.Global
+#pragma warning disable CS8618
+
 namespace Nedordle.Helpers.Types;
 
 public class Locale
 {
     public static readonly Dictionary<string, Locale> Locales = new();
-    public string Flag = null!;
+    public string Flag;
 
-    public string FullName = null!;
+    public string FullName;
 
     [JsonProperty(PropertyName = "Metrics_ms")]
-    public string Milliseconds = null!;
+    public string Milliseconds;
 
-    public string NativeName = null!;
+    public string NativeName;
 
     // ReSharper disable once FieldCanBeMadeReadOnly.Global
-    public string Ping = null!;
+    public string Ping;
 
     [JsonProperty(PropertyName = "Ping_AfterMessages")]
-    public List<string> PingAfterMessages = null!;
+    public List<string> PingAfterMessages;
 
     [JsonProperty(PropertyName = "Ping_BeforeMessages")]
-    public List<string> PingBeforeMessages = null!;
+    public List<string> PingBeforeMessages;
 
     [JsonProperty(PropertyName = "Ping_ClientLatency")]
-    public string PingClientLatency = null!;
+    public string PingClientLatency;
 
     [JsonProperty(PropertyName = "Ping_MessageLatency")]
-    public string PingMessageLatency = null!;
+    public string PingMessageLatency;
 
-    public string ShortName = null!;
+    [JsonProperty(PropertyName = "SelectLocale_MainText")]
+    public string SelectLocaleMainText;
+
+    [JsonProperty(PropertyName = "SelectLocale_Placeholder")]
+    public string SelectLocalePlaceholder;
+
+    [JsonProperty(PropertyName = "SelectLocale_Success")]
+    public string SelectLocaleSuccess;
+
+    public string ShortName;
+
+    public string TimedOut;
 }
