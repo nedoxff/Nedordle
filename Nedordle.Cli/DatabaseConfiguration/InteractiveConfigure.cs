@@ -274,6 +274,7 @@ create unique index dictionary_{shortName}_word_uindex
         constraint guilds_pk
             primary key,
     games            integer default 0 not null,
+    create_category integer default 0 not null,
     primary_language text    default en not null
 );
 

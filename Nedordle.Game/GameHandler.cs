@@ -1,12 +1,12 @@
 using DSharpPlus.Entities;
 
-namespace Nedordle.Core.Game;
+namespace Nedordle.Game;
 
 public abstract class GameHandler
 {
-    public string Id { get; }
+    public string Id { get; init; }
     public List<DiscordUser> Players { get; } = new();
-    public DiscordChannel Channel { get; }
+    public DiscordChannel Channel { get; init; }
 
     public abstract Task OnCreate();
     public abstract Task OnJoined(DiscordUser user);

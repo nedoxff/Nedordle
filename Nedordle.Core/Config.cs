@@ -24,6 +24,11 @@ public class Config
         set => _objects[name] = value;
     }
 
+    public bool Contains(string name)
+    {
+        return _objects.ContainsKey(name);
+    }
+
     /// <summary>
     ///     Load variables from the .env file.
     ///     <example>

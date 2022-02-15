@@ -3,6 +3,7 @@ namespace Nedordle.Helpers;
 public static class RandomExtensions
 {
     private const string Chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private const string CapitalLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     public static Random New()
     {
@@ -18,6 +19,12 @@ public static class RandomExtensions
     public static string NextString(this Random random, int length)
     {
         return new string(Enumerable.Repeat(Chars, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    public static string NextUpperString(this Random random, int length)
+    {
+        return new string(Enumerable.Repeat(CapitalLetters, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }

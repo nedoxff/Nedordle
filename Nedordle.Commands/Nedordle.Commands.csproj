@@ -15,11 +15,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Nedordle.Database\Nedordle.Database.csproj"/>
+        <ProjectReference Include="..\Nedordle.Drawer\Nedordle.Drawer.csproj"/>
+        <ProjectReference Include="..\Nedordle.Game\Nedordle.Game.csproj"/>
         <ProjectReference Include="..\Nedordle.Helpers\Nedordle.Helpers.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Game"/>
     </ItemGroup>
 
 </Project>

@@ -9,8 +9,7 @@ public class Ping : ExtendedCommandModule
 {
     private readonly DiscordColor[] _colors =
     {
-        DiscordColor.Green, DiscordColor.DarkGreen, DiscordColor.Yellow, DiscordColor.Orange, DiscordColor.Red,
-        DiscordColor.DarkRed
+        SimpleDiscordEmbed.PastelGreen, SimpleDiscordEmbed.PastelYellow, SimpleDiscordEmbed.PastelRed
     };
 
     [SlashCommand("ping", "See if the bot is online.")]
@@ -18,7 +17,7 @@ public class Ping : ExtendedCommandModule
     {
         var waitEmbed = new DiscordEmbedBuilder()
             .WithDescription(RandomExtensions.New().NextElement(Locale.PingBeforeMessages))
-            .WithColor(DiscordColor.Gold)
+            .WithColor(SimpleDiscordEmbed.PastelYellow)
             .Build();
 
         var time = DateTime.Now;
@@ -29,7 +28,7 @@ public class Ping : ExtendedCommandModule
 
         var color = DiscordColor.Black;
         for (var i = 0; i < _colors.Length; i++)
-            if (difference >= 150 * i && difference <= 150 * (i + 1))
+            if (difference >= 300 * i && difference <= 300 * (i + 1))
             {
                 color = _colors[i];
                 break;

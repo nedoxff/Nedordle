@@ -6,20 +6,20 @@ namespace Nedordle.UptimeServer;
 
 public class UptimeListener
 {
-    private static async Task Listen()
+    private static async Task Listen(string placeholder)
     {
         var listener = new HttpListener();
         listener.Prefixes.Add("http://localhost:3000/");
         listener.Start();
         Log.Information("Started uptime server");
 
+        var responseString =
+            $"<html><center><h1>{placeholder}</h1><h2>Nedordle&trade;, all rights deleted.</h2></center></html>";
         while (true)
         {
             var context = await listener.GetContextAsync();
             var response = context.Response;
 
-            const string responseString =
-                "<html><center><h1>i dont know what you expect to see here</h1></center></html>";
             var buffer = Encoding.UTF8.GetBytes(responseString);
             response.ContentLength64 = buffer.Length;
             var output = response.OutputStream;
@@ -29,9 +29,9 @@ public class UptimeListener
         // ReSharper disable once FunctionNeverReturns
     }
 
-    public static void Start()
+    public static void Start(string placeholder)
     {
-        new Thread(Listen().GetAwaiter().GetResult)
+        new Thread(Listen(placeholder).GetAwaiter().GetResult)
         {
             Name = "Uptime Server",
             IsBackground = true

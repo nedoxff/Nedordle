@@ -1,6 +1,6 @@
 using DSharpPlus.Entities;
 
-namespace Nedordle.Core.Game.Handler;
+namespace Nedordle.Game.Handlers;
 
 public class RegularGameHandler : GameHandler
 {

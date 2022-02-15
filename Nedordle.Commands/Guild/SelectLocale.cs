@@ -19,14 +19,14 @@ public class SelectLocale : ExtendedCommandModule
             return;
         }
 
-        await ctx.CreateResponseAsync(SimpleDiscordEmbed.Colored(DiscordColor.Gold,
+        await ctx.CreateResponseAsync(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelYellow,
             Locale.SelectLocaleMainText));
         var builder = new DiscordFollowupMessageBuilder()
             .WithContent(DiscordEmoji.FromName(ctx.Client, ":point_down:"))
             .AddComponents(new DiscordSelectComponent("locale_select", Locale.SelectLocalePlaceholder, GetLocales()));
         var message = await ctx.FollowUpAsync(builder);
 
-        var result = await message.WaitForSelectAsync(ctx.User, "locale_select");
+        var result = await message.WaitForSelectAsync(ctx.User, "locale_select", TimeSpan.FromMinutes(1));
         if (result.TimedOut)
         {
             await message.DeleteAsync();

@@ -4,6 +4,10 @@ namespace Nedordle.Helpers;
 
 public class SimpleDiscordEmbed
 {
+    public static DiscordColor PastelRed = new(255, 105, 97);
+    public static DiscordColor PastelYellow = new(253, 253, 150);
+    public static DiscordColor PastelGreen = new(119, 221, 119);
+
     public static DiscordEmbedBuilder Colored(DiscordColor color, string title = "", string description = "",
         string footer = "")
     {
@@ -16,16 +20,16 @@ public class SimpleDiscordEmbed
 
     public static DiscordEmbedBuilder Error(string description, string footer = "", string title = "")
     {
-        return Colored(DiscordColor.DarkRed, title, description, footer);
+        return Colored(PastelRed, title, description, footer);
     }
 
     public static DiscordEmbedBuilder Warning(string description, string footer = "", string title = "")
     {
-        return Colored(DiscordColor.Gold, title, description, footer);
+        return Colored(PastelYellow, title, description, footer);
     }
 
     public static DiscordEmbedBuilder Success(string description, string footer = "", string title = "")
     {
-        return Colored(DiscordColor.DarkGreen, title, description, footer);
+        return Colored(PastelGreen, title, description, footer);
     }
 }

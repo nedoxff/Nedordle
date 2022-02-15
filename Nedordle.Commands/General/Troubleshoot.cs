@@ -13,7 +13,7 @@ public class Troubleshoot : ExtendedCommandModule
     {
         var task = new MessageTaskListBuilder(ctx)
             .WithTitle("Finding issues..")
-            .WithColor(DiscordColor.Gold)
+            .WithColor(SimpleDiscordEmbed.PastelYellow)
             .AddTask("Checking for server in the database")
             .AddTask("Checking if the locale is valid")
             .Build();
@@ -34,12 +34,12 @@ public class Troubleshoot : ExtendedCommandModule
         }
         else if (!Locale.Locales.ContainsKey(locale))
         {
-            task.Log("Invalid locale \"{Locale}\".", locale);
+            task.Log("Invalid locale \"{0}\".", locale);
             problems.Add(ProblemType.InvalidLocale);
         }
         else
         {
-            task.Log("Valid locale detected. (\"{Locale}\")", locale);
+            task.Log("Valid locale detected. (\"{0}\")", locale);
         }
 
         await task.FinishTask();
@@ -49,18 +49,18 @@ public class Troubleshoot : ExtendedCommandModule
         if (problems.Count != 0)
         {
             var followUp = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Colored(DiscordColor.Gold, "", "Fixing problems..")));
+                .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelYellow, "", "Fixing problems..")));
 
             foreach (var problem in problems)
                 FixProblem(ctx, problem);
 
             await ctx.EditFollowupAsync(followUp.Id, new DiscordWebhookBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Colored(DiscordColor.DarkGreen, "", "Done!")));
+                .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen, "", "Done!")));
         }
         else
         {
             await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Colored(DiscordColor.DarkGreen, "", "No problems found.")));
+                .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen, "", "No problems found.")));
         }
     }
 

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Nedordle.Commands.General;
 using Nedordle.Core.EventHandlers;
 using Nedordle.Database;
+using Nedordle.Drawer;
 using Nedordle.UptimeServer;
 using Serilog;
 using Serilog.Events;
@@ -14,9 +15,8 @@ namespace Nedordle.Core;
 
 public class Client
 {
+    private const string DefaultServerResponseString = "I don't know what you expect to see here.";
     private static DiscordClient _client = null!;
-
-
     private static readonly string[] Files = {"latest_log.txt", "latest_log_debug.txt"};
 
     //TODO: add command handlers
@@ -24,7 +24,18 @@ public class Client
     {
         InitializeLogger();
         CheckResources();
-        UptimeListener.Start();
+
+        var stream = NewGameDrawer.Generate("Mathmems");
+        var file = new FileStream("test.png", FileMode.OpenOrCreate, FileAccess.Write);
+        stream.Seek(0, SeekOrigin.Begin);
+        await stream.CopyToAsync(file);
+        stream.Close();
+        file.Close();
+
+
+        UptimeListener.Start(config.Contains("SERVER_RESPONSE_STRING")
+            ? config["SERVER_RESPONSE_STRING"]
+            : DefaultServerResponseString);
 
         var logFactory = new LoggerFactory().AddSerilog();
         _client = new DiscordClient(new DiscordConfiguration
