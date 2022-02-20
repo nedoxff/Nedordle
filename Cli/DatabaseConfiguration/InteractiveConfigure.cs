@@ -77,7 +77,7 @@ public static class InteractiveConfigure
         }
 
         AnsiConsole.Status()
-            .Spinner(Spinner.Known.Moon)
+            .Spinner(Spinner.Known.Dots2)
             .Start("Configuring database file..", ctx =>
             {
                 if (!exists)
@@ -103,6 +103,7 @@ public static class InteractiveConfigure
                     CreatePlayersTable();
                     CreateLanguagesTable();
                     CreateLocalesTable();
+                    CreateGamesTable();
                 }
             });
     }
@@ -181,7 +182,7 @@ public static class InteractiveConfigure
             var words = new Dictionary<string, int>();
 
             AnsiConsole.Status()
-                .Spinner(Spinner.Known.Moon).Start($"Extracting [italic yellow]\"{shortName}.zip\"[/]..", ctx =>
+                .Spinner(Spinner.Known.Dots2).Start($"Extracting [italic yellow]\"{shortName}.zip\"[/]..", ctx =>
                 {
                     ZipFile.ExtractToDirectory(Path.Combine(_dataFolder, "Dictionaries", shortName + ".zip"),
                         languageDir);
@@ -206,7 +207,7 @@ public static class InteractiveConfigure
 
                 CreateLanguageTable(info.ShortName);
                 DatabaseController.ExecuteNonQuery(
-                    $"insert into languages(short, \"full\", native, flag) values(\"{info.ShortName}\", \"{info.FullName}\", \"{info.NativeName}\", \"{info.Flag}\")");
+                    $"insert into languages(short, \"full\", native, flag, word_count) values(\"{info.ShortName}\", \"{info.FullName}\", \"{info.NativeName}\", \"{info.Flag}\", {words.Count})");
 
                 DatabaseController.ThrowIfNull();
                 DatabaseController.Connection!.Open();
@@ -233,6 +234,14 @@ public static class InteractiveConfigure
 
                 transaction.Commit();
                 DatabaseController.Connection.Close();
+
+                AnsiConsole.MarkupLine($"[yellow italic]Creating language info table for {info.ShortName}..[/]");
+                CreateLanguageInfoTable(info.ShortName);
+
+                foreach (var pair in info.LetterCount)
+                    DatabaseController.ExecuteNonQuery(
+                        $"insert into info_{info.ShortName}(letter_count, word_count) values({pair.Key}, {pair.Value})");
+
 
                 AnsiConsole.MarkupLine($"[green italic]{indexing.Value}[/] words were successfully imported.");
             });
@@ -275,6 +284,7 @@ create unique index dictionary_{shortName}_word_uindex
             primary key,
     games            integer default 0 not null,
     create_category integer default 0 not null,
+    allow_creating_channels integer default 0 not null,
     primary_language text    default en not null
 );
 
@@ -291,7 +301,8 @@ create unique index guilds_id_uindex
             primary key,
     ""full"" text not null,
         native text not null,
-        flag text not null
+        flag text not null,
+        word_count integer not null
             );
 
         create unique index languages_full_uindex
@@ -321,12 +332,49 @@ create unique index locales_id_uindex
     on locales (id);");
     }
 
+    private static void CreateGamesTable()
+    {
+        DatabaseController.ExecuteNonQuery(@"create table games
+(
+    id            text    not null
+        constraint games_pk
+            primary key,
+    channel       integer not null,
+    guild         integer not null,
+    type          text    not null,
+    players       text    not null,
+    language      text    not null,
+    locale        text    not null,
+    specific_info text
+);
+
+create unique index games_id_uindex
+    on games (id);");
+    }
+
+    private static void CreateLanguageInfoTable(string language)
+    {
+        DatabaseController.ExecuteNonQuery($@"create table info_{language}
+(
+    letter_count integer not null
+        constraint info_{language}_pk
+            primary key,
+    word_count   integer not null
+);
+
+create unique index info_{language}_letter_count_uindex
+    on info_{language} (letter_count);");
+    }
+
+    // ReSharper disable FieldCanBeMadeReadOnly.Local
     private class LanguageInfo
     {
-        public readonly string DictionaryFile = null!;
-        public readonly string Flag = null!;
-        public readonly string FullName = null!;
-        public readonly string NativeName = null!;
-        public readonly string ShortName = null!;
+        public string DictionaryFile = null!;
+        public string Flag = null!;
+        public string FullName = null!;
+        public Dictionary<int, int> LetterCount = new();
+        public string NativeName = null!;
+        public string ShortName = null!;
     }
+    // ReSharper restore FieldCanBeMadeReadOnly.Local
 }

@@ -1,5 +1,4 @@
 using System.Globalization;
-using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using Nedordle.Helpers.Types;
@@ -40,8 +39,7 @@ public class SlashCommandErrored
 
         Log.Error("An error occured while executing a slash command. Error ID: {ErrorGuid}", guid);
 
-        await e.Context.FollowUpAsync(new DiscordFollowupMessageBuilder()
-            .WithContent(
-                $"An error occured while executing your command.\nAn error report has been created, please wait for further messages.\nYour error ID: `{guid}`"));
+        await e.Context.Channel.SendMessageAsync(
+            $"An error occured while executing your command.\nAn error report has been created, please wait for further messages.\nYour error ID: `{guid}`");
     }
 }

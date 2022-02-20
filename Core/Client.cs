@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Nedordle.Commands.General;
 using Nedordle.Core.EventHandlers;
 using Nedordle.Database;
-using Nedordle.Drawer;
 using Nedordle.UptimeServer;
 using Serilog;
 using Serilog.Events;
@@ -24,14 +23,6 @@ public class Client
     {
         InitializeLogger();
         CheckResources();
-
-        var stream = NewGameDrawer.Generate("Mathmems");
-        var file = new FileStream("test.png", FileMode.OpenOrCreate, FileAccess.Write);
-        stream.Seek(0, SeekOrigin.Begin);
-        await stream.CopyToAsync(file);
-        stream.Close();
-        file.Close();
-
 
         UptimeListener.Start(config.Contains("SERVER_RESPONSE_STRING")
             ? config["SERVER_RESPONSE_STRING"]

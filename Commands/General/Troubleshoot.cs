@@ -16,6 +16,7 @@ public class Troubleshoot : ExtendedCommandModule
             .WithColor(SimpleDiscordEmbed.PastelYellow)
             .AddTask("Checking for server in the database")
             .AddTask("Checking if the locale is valid")
+            .IsPrivate()
             .Build();
 
         var problems = new List<ProblemType>();
@@ -49,7 +50,8 @@ public class Troubleshoot : ExtendedCommandModule
         if (problems.Count != 0)
         {
             var followUp = await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelYellow, "", "Fixing problems..")));
+                .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelYellow, "", "Fixing problems.."))
+                .AsEphemeral(true));
 
             foreach (var problem in problems)
                 FixProblem(ctx, problem);
@@ -60,7 +62,8 @@ public class Troubleshoot : ExtendedCommandModule
         else
         {
             await ctx.FollowUpAsync(new DiscordFollowupMessageBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen, "", "No problems found.")));
+                .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen, "", "No problems found."))
+                .AsEphemeral(true));
         }
     }
 

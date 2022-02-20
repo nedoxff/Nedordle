@@ -15,15 +15,15 @@ public class Ping : ExtendedCommandModule
     [SlashCommand("ping", "See if the bot is online.")]
     public async Task Execute(InteractionContext ctx)
     {
-        var waitEmbed = new DiscordEmbedBuilder()
-            .WithDescription(RandomExtensions.New().NextElement(Locale.PingBeforeMessages))
-            .WithColor(SimpleDiscordEmbed.PastelYellow)
-            .Build();
+        var waitEmbed = SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelYellow,
+            RandomExtensions.New().NextElement(Locale.PingBeforeMessages));
 
         var time = DateTime.Now;
         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder()
-                .AddEmbed(waitEmbed));
+                .AddEmbed(waitEmbed)
+                .AsEphemeral());
+
         var difference = (DateTime.Now - time).Milliseconds;
 
         var color = DiscordColor.Black;

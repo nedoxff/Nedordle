@@ -54,13 +54,14 @@ public class MessageTaskList
     private int _index;
 
     public MessageTaskList(DiscordEmbedBuilder builder, Dictionary<string, MessageTask> tasks, InteractionContext ctx,
+        bool isPrivate,
         string successDescription = "")
     {
         _successDescription = successDescription;
         _builder = builder;
         _tasks = tasks;
         _context = ctx;
-        Init().GetAwaiter().GetResult();
+        Init(isPrivate).GetAwaiter().GetResult();
     }
 
     public void Log(string message)
@@ -73,9 +74,11 @@ public class MessageTaskList
         _tasks.ElementAt(_index).Value.Log += string.Format(template, objs) + "\n";
     }
 
-    private async Task Init()
+    private async Task Init(bool isPrivate)
     {
-        await _context.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+        await _context.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder()
+                .AsEphemeral(isPrivate));
         await UpdateContent();
     }
 
@@ -128,6 +131,8 @@ public class MessageTaskListBuilder
     private readonly DiscordEmbedBuilder _builder = new();
     private readonly InteractionContext _context;
     private readonly Dictionary<string, MessageTask> _tasks = new();
+
+    private bool _private;
     private string _successDescription = "";
 
     public MessageTaskListBuilder(InteractionContext context)
@@ -159,8 +164,14 @@ public class MessageTaskListBuilder
         return this;
     }
 
+    public MessageTaskListBuilder IsPrivate()
+    {
+        _private = true;
+        return this;
+    }
+
     public MessageTaskList Build()
     {
-        return new MessageTaskList(_builder, _tasks, _context, _successDescription);
+        return new MessageTaskList(_builder, _tasks, _context, _private, _successDescription);
     }
 }
