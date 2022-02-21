@@ -51,3 +51,7 @@ Congrats :D
 **Josh Wardle** for creating Wordle!
 
 **The DSharpPlus team** for creating DSharpPlus!
+
+## For the curious
+
+[Notion Board](https://tulip-monday-2cf.notion.site/256ee5d3a7d94579b0e3c7c30de7cb81?v=4df6e468b2f743d8ab143d825437a43b)
