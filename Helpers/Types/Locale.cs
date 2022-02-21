@@ -12,7 +12,7 @@ public class Locale
 
     #region Game Types
 
-    public Dictionary<string, GameType> GameTypes;
+    public Dictionary<string, GameType> GameTypes = new();
 
     #endregion
 
@@ -26,6 +26,7 @@ public class Locale
     #region Error Messages
 
     public string TimedOut;
+    public string GuildNotInDatabase;
 
     #endregion
 
@@ -93,6 +94,22 @@ public class Locale
     [JsonProperty(PropertyName = "Create_LanguageDescription")]
     public string CreateLanguageDescription;
 
+    #endregion
+    
+    #region Command: Troubleshoot
+
+    [JsonProperty(PropertyName = "Troubleshoot_FindingIssues")]
+    public string TroubleshootFindingIssues;
+    [JsonProperty(PropertyName = "Troubleshoot_Server")]
+    public string TroubleshootServer;
+    
+    [JsonProperty(PropertyName = "Troubleshoot_Fixing")]
+    public string TroubleshootFixing;
+    [JsonProperty(PropertyName = "Troubleshoot_Done")]
+    public string TroubleshootDone;
+    [JsonProperty(PropertyName = "Troubleshoot_NoIssues")]
+    public string TroubleshootNoIssues;
+    
     #endregion
 
     #region Locale Information

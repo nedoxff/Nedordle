@@ -19,7 +19,7 @@ public class Create : ExtendedCommandModule
         if (!GuildDatabaseHelper.GuildExists(ctx.Guild.Id))
         {
             await ctx.CreateResponseAsync(
-                SimpleDiscordEmbed.Error("Your server is not in the database! Please run `/troubleshoot`."));
+                SimpleDiscordEmbed.Error(Locale.GuildNotInDatabase));
             return;
         }
 
@@ -49,9 +49,7 @@ public class Create : ExtendedCommandModule
 
         DiscordChannel channel;
         if (dms || !GuildDatabaseHelper.GetAllowCreatingChannels(ctx.Guild.Id))
-        {
-            channel = ctx.Channel;
-        }
+            channel = ctx.Channel.IsPrivate ? ctx.Channel: await ctx.Member.CreateDmChannelAsync();
         else
         {
             var createCategory = GuildDatabaseHelper.GetCreateCategory(ctx.Guild.Id);
@@ -65,18 +63,22 @@ public class Create : ExtendedCommandModule
                 {Channel = channel, Id = id, Locale = Locale.ShortName, Language = language},
             _ => null
         };
+        if (handler is null)
+            throw new Exception(
+                "GameHandler in the /create command was null! (was the interaction response ID invalid?)");
         Log.Information(
-            "Created new game ({GameId}). Type: {GameType} | Language: {GameLanguage} | Channel: {GameChannel}", id,
-            gameType, language, channel.Id);
-        handler?.Update();
+            "Created new game ({GameId}). Type: {GameType} | Language: {GameLanguage} | Channel: {GameChannel} | Guild: {GameGuild}", id,
+            gameType, language, channel.Id, channel.IsPrivate ? "none (DMs)": channel.Guild.Id);
 
         var stream = NewGameDrawer.Generate(id);
         stream.Seek(0, SeekOrigin.Begin);
 
         var builder = new DiscordWebhookBuilder()
-            .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen, $"Here is your game ID: `{id}`"))
+            .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen, string.Format(Locale.CreateDone, id)))
             .AddFile("id.png", stream);
         await ctx.EditResponseAsync(builder);
+        
+        await handler.OnCreate();
     }
 
     private async Task<string> GetGameType(BaseContext ctx)

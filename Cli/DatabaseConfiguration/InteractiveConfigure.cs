@@ -284,8 +284,7 @@ create unique index dictionary_{shortName}_word_uindex
             primary key,
     games            integer default 0 not null,
     create_category integer default 0 not null,
-    allow_creating_channels integer default 0 not null,
-    primary_language text    default en not null
+    allow_creating_channels integer default 0 not null
 );
 
 create unique index guilds_id_uindex

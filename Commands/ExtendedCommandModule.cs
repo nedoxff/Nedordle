@@ -12,13 +12,13 @@ public class ExtendedCommandModule : ApplicationCommandModule
     public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
     {
         Log.Debug("Trying to get locale for guild {GuildId}..", ctx.Guild.Id);
-        var locale = LocaleDatabaseHelper.GetLocale(ctx.Guild.Id);
+        var locale = ctx.Interaction.Locale;
         if (string.IsNullOrEmpty(locale))
         {
             Log.Debug("Guild was not in the database, using \"en\"");
             Locale = Locale.Locales["en"];
         }
-        else if (!Locale.Locales.ContainsKey(locale))
+        else if (!Locale.Locales.Any(x => locale.StartsWith(x.Key)))
         {
             Log.Debug("Invalid locale \"{Locale}\", using \"en\"", locale);
             Locale = Locale.Locales["en"];

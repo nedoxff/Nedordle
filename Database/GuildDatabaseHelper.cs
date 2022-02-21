@@ -8,7 +8,7 @@ public class GuildDatabaseHelper
     {
         Log.Debug("Creating guild with ID {GuildId}", id);
         DatabaseController.ExecuteNonQuery(
-            $"replace into guilds(id, games, create_category, primary_language) values({id}, 0, 0, 'en')");
+            $"replace into guilds(id, games, create_category) values({id}, 0, 0)");
     }
 
     public static void RemoveGuild(ulong id)
@@ -21,12 +21,6 @@ public class GuildDatabaseHelper
     {
         Log.Debug("Checking for guild with ID {GuildId}", id);
         return DatabaseController.ExecuteScalar<long>($"select exists(select 1 from guilds where id = {id})") == 1;
-    }
-
-    public static void SetLocale(ulong id, string locale)
-    {
-        Log.Debug("Changing locale for guild with ID {GuildId} to \"{NewLocale}\"", id, locale);
-        DatabaseController.ExecuteNonQuery($"update guilds set primary_language = '{locale}' where id = {id}");
     }
 
     public static ulong GetCreateCategory(ulong id)

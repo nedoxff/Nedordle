@@ -28,4 +28,19 @@ public class RegularGameHandler : GameHandler
     {
         throw new NotImplementedException();
     }
+
+    public override Task OnNextStep()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override bool CheckEnd()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override string BuildResult()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -29,10 +29,4 @@ public class LocaleDatabaseHelper
         reader.Close();
         DatabaseController.Connection!.Close();
     }
-
-    public static string? GetLocale(ulong guild)
-    {
-        var obj = DatabaseController.ExecuteScalar<string>($"select primary_language from guilds where id = {guild}");
-        return obj;
-    }
 }

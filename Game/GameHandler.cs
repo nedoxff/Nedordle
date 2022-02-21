@@ -18,6 +18,9 @@ public abstract class GameHandler
     public abstract Task OnLeft(DiscordUser user);
     public abstract Task OnStart();
     public abstract Task OnEnd();
+    public abstract Task OnNextStep();
+    public abstract bool CheckEnd();
+    public abstract string BuildResult();
 
     public virtual void Update()
     {
