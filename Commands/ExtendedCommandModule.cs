@@ -25,8 +25,9 @@ public class ExtendedCommandModule : ApplicationCommandModule
         }
         else
         {
-            Log.Debug("The language for this guild is \"{Locale}\"", locale);
-            Locale = Locale.Locales[locale];
+            var nedordleLocale = Locale.Locales.First(x => locale.StartsWith(x.Key)).Key;
+            Log.Debug("The language for this guild is \"{Locale}\"", nedordleLocale);
+            Locale = Locale.Locales[nedordleLocale];
         }
 
         return Task.FromResult(true);

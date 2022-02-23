@@ -1,3 +1,5 @@
+using Serilog;
+
 namespace Nedordle.Database;
 
 public struct LanguageInfo
@@ -13,6 +15,7 @@ public class LanguageDatabaseHelper
 {
     public static IEnumerable<LanguageInfo> GetLanguages()
     {
+        Log.Debug("Getting available languages");
         var reader = DatabaseController.ExecuteReader("select * from languages");
 
         var list = new List<LanguageInfo>();
@@ -27,8 +30,6 @@ public class LanguageDatabaseHelper
             });
 
         reader.Close();
-        DatabaseController.Connection!.Close();
-
         return list;
     }
 }

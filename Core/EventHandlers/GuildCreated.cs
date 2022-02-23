@@ -24,7 +24,7 @@ public class GuildCreated
         var channel = guild.SystemChannel == null ? guild.GetDefaultChannel() : guild.SystemChannel;
         var message = await channel.SendMessageAsync(embed);
 
-        GuildDatabaseHelper.AddGuild(guild.Id);
+        GuildDatabaseHelper.Add(guild.Id);
 
         embed = embed
             .WithColor(SimpleDiscordEmbed.PastelGreen)

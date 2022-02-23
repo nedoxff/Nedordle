@@ -14,6 +14,7 @@ public class Troubleshoot : ExtendedCommandModule
             .WithTitle(Locale.TroubleshootFindingIssues)
             .WithColor(SimpleDiscordEmbed.PastelYellow)
             .AddTask(Locale.TroubleshootServer)
+            .AddTask(Locale.TroubleshootUser)
             .IsPrivate()
             .Build();
 
@@ -22,6 +23,11 @@ public class Troubleshoot : ExtendedCommandModule
         var guildExists = GuildDatabaseHelper.GuildExists(ctx.Guild.Id);
         if (!guildExists)
             problems.Add(ProblemType.GuildNotInDatabase);
+        await task.FinishTask();
+
+        var userExists = UserDatabaseHelper.Exists(ctx.User.Id);
+        if(!userExists)
+            problems.Add(ProblemType.UserNotInDatabase);
         await task.FinishTask();
 
         //TODO: other troubleshooting things
@@ -51,7 +57,10 @@ public class Troubleshoot : ExtendedCommandModule
         switch (type)
         {
             case ProblemType.GuildNotInDatabase:
-                GuildDatabaseHelper.AddGuild(ctx.Guild.Id);
+                GuildDatabaseHelper.Add(ctx.Guild.Id);
+                break;
+            case ProblemType.UserNotInDatabase:
+                UserDatabaseHelper.Add(ctx.User.Id);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -60,6 +69,7 @@ public class Troubleshoot : ExtendedCommandModule
 
     private enum ProblemType
     {
-        GuildNotInDatabase
+        GuildNotInDatabase,
+        UserNotInDatabase
     }
 }

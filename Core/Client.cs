@@ -1,11 +1,14 @@
 using System.Reflection;
 using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.Logging;
 using Nedordle.Commands.General;
 using Nedordle.Core.EventHandlers;
 using Nedordle.Database;
+using Nedordle.Drawer;
 using Nedordle.UptimeServer;
 using Serilog;
 using Serilog.Events;
@@ -18,6 +21,9 @@ public class Client
     private static DiscordClient _client = null!;
     private static readonly string[] Files = {"latest_log.txt", "latest_log_debug.txt"};
 
+    public static DiscordUser User => _client.CurrentUser;
+
+    public static IReadOnlyDictionary<ulong, DiscordGuild> Guilds => _client.Guilds;
     //TODO: add command handlers
     public static async Task Start(Config config)
     {
@@ -33,12 +39,13 @@ public class Client
         {
             Token = config["TOKEN"],
             TokenType = TokenType.Bot,
-            Intents = DiscordIntents.Guilds,
+            Intents = DiscordIntents.Guilds | DiscordIntents.DirectMessages | DiscordIntents.GuildMessages,
             LoggerFactory = logFactory,
             MinimumLogLevel = LogLevel.Debug
         });
         _client.GuildCreated += GuildCreated.OnGuildCreated;
         _client.GuildDeleted += GuildDeleted.OnGuildDeleted;
+        _client.MessageCreated += MessageCreated.OnMessageCreated;
 
         var slash = _client.UseSlashCommands();
         slash.SlashCommandErrored += SlashCommandErrored.OnSlashCommandErrored;
@@ -54,6 +61,8 @@ public class Client
         await _client.ConnectAsync();
         await Task.Delay(-1);
     }
+
+    
 
     private static void InitializeLogger()
     {
@@ -79,6 +88,7 @@ public class Client
         ThrowIfDoesNotExist("database.db");
         ThrowIfDoesNotExist("Resources");
         ThrowIfDoesNotExist("Resources/wordle_font.ttf");
+        ThrowIfDoesNotExist("Resources/noto.ttf");
         Log.Information("All fine!");
     }
 

@@ -17,9 +17,9 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.2-dev-00890" />
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta14" />
-        <PackageReference Include="Spectre.Console" Version="0.43.1-preview.0.31" />
-        <PackageReference Include="Spectre.Console.Analyzer" Version="0.43.1-preview.0.31" />
-        <PackageReference Include="Spectre.Console.ImageSharp" Version="0.43.1-preview.0.31" />
+        <PackageReference Include="Spectre.Console" Version="0.43.1-preview.0.36" />
+        <PackageReference Include="Spectre.Console.Analyzer" Version="0.43.1-preview.0.36" />
+        <PackageReference Include="Spectre.Console.ImageSharp" Version="0.43.1-preview.0.36" />
         <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />
     </ItemGroup>
 

@@ -19,7 +19,7 @@ public class Create : ExtendedCommandModule
         if (!GuildDatabaseHelper.GuildExists(ctx.Guild.Id))
         {
             await ctx.CreateResponseAsync(
-                SimpleDiscordEmbed.Error(Locale.GuildNotInDatabase));
+                SimpleDiscordEmbed.Error(Locale.GuildNotInDatabase), true);
             return;
         }
 
@@ -60,7 +60,7 @@ public class Create : ExtendedCommandModule
         GameHandler? handler = gameType switch
         {
             "usual" => new RegularGameHandler
-                {Channel = channel, Id = id, Locale = Locale.ShortName, Language = language},
+                {Channel = channel, Id = id, LocaleString = Locale.ShortName, Language = language},
             _ => null
         };
         if (handler is null)
@@ -70,15 +70,17 @@ public class Create : ExtendedCommandModule
             "Created new game ({GameId}). Type: {GameType} | Language: {GameLanguage} | Channel: {GameChannel} | Guild: {GameGuild}", id,
             gameType, language, channel.Id, channel.IsPrivate ? "none (DMs)": channel.Guild.Id);
 
-        var stream = NewGameDrawer.Generate(id);
+        var stream = WordleDrawer.Generate($"[c]{id}[/]");
         stream.Seek(0, SeekOrigin.Begin);
 
         var builder = new DiscordWebhookBuilder()
             .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen, string.Format(Locale.CreateDone, id)))
             .AddFile("id.png", stream);
         await ctx.EditResponseAsync(builder);
-        
+
+        GameHandler.Handlers[id] = handler;
         await handler.OnCreate();
+        await handler.OnJoined(ctx.User);
     }
 
     private async Task<string> GetGameType(BaseContext ctx)

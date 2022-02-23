@@ -14,6 +14,7 @@ public class DatabaseController
     public static void Open(string file)
     {
         Connection = new SQLiteConnection($"Data Source = {file}");
+        Connection.Open();
     }
 
     public static void ThrowIfNull()
@@ -25,7 +26,6 @@ public class DatabaseController
     private static SQLiteCommand CreateCommand(string query, params object[] args)
     {
         ThrowIfNull();
-        Connection!.Open();
         var command = Connection.CreateCommand();
         command.CommandText = string.Format(query, args);
         return command;
@@ -36,7 +36,6 @@ public class DatabaseController
         ThrowIfNull();
         var command = CreateCommand(query, args);
         var changed = command.ExecuteNonQuery();
-        Connection!.Close();
         return changed;
     }
 
@@ -45,7 +44,6 @@ public class DatabaseController
         ThrowIfNull();
         var command = CreateCommand(query, args);
         var obj = command.ExecuteScalar();
-        Connection!.Close();
         return (T?) obj;
     }
 
@@ -64,7 +62,6 @@ public class DatabaseController
         while (reader.Read())
             result.Add(reader.GetString(0));
         reader.Close();
-        Connection!.Close();
         return result;
     }
 

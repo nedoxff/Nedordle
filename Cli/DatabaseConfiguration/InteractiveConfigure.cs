@@ -91,6 +91,7 @@ public static class InteractiveConfigure
                     var tables = DatabaseController.GetTables();
                     DatabaseController.DropTable("locales");
                     DatabaseController.DropTable("languages");
+                    DatabaseController.DropTable("themes");
                     foreach (var table in tables.Where(x => x.StartsWith("dictionary_")))
                         DatabaseController.DropTable(table);
                     CreateLanguagesTable();
@@ -100,10 +101,11 @@ public static class InteractiveConfigure
                 {
                     ctx.Status("Creating required tables..");
                     CreateGuildsTable();
-                    CreatePlayersTable();
+                    CreateUsersTable();
                     CreateLanguagesTable();
                     CreateLocalesTable();
                     CreateGamesTable();
+                    CreateThemesTable();
                 }
             });
     }
@@ -209,8 +211,6 @@ public static class InteractiveConfigure
                 DatabaseController.ExecuteNonQuery(
                     $"insert into languages(short, \"full\", native, flag, word_count) values(\"{info.ShortName}\", \"{info.FullName}\", \"{info.NativeName}\", \"{info.Flag}\", {words.Count})");
 
-                DatabaseController.ThrowIfNull();
-                DatabaseController.Connection!.Open();
                 var transaction = DatabaseController.Connection.BeginTransaction();
                 var command = DatabaseController.Connection.CreateCommand();
                 command.CommandText =
@@ -233,7 +233,6 @@ public static class InteractiveConfigure
                 }
 
                 transaction.Commit();
-                DatabaseController.Connection.Close();
 
                 AnsiConsole.MarkupLine($"[yellow italic]Creating language info table for {info.ShortName}..[/]");
                 CreateLanguageInfoTable(info.ShortName);
@@ -264,15 +263,20 @@ create unique index dictionary_{shortName}_word_uindex
     on dictionary_{shortName} (word);");
     }
 
-    private static void CreatePlayersTable()
+    private static void CreateUsersTable()
     {
-        DatabaseController.ExecuteNonQuery(@"create table players
+        DatabaseController.ExecuteNonQuery(@"create table users
 (
-    id       integer not null,
-    guild_id integer not null,
-    games    integer default 0 not null,
-    level    integer default 0
-);");
+    id    integer not null
+        constraint users_pk
+            primary key,
+    games integer default 0 not null,
+    level integer default 0 not null,
+    theme text    not null
+);
+
+create unique index users_id_uindex
+    on users (id);");
     }
 
     private static void CreateGuildsTable()
@@ -342,9 +346,10 @@ create unique index locales_id_uindex
     guild         integer not null,
     type          text    not null,
     players       text    not null,
+    player_data   text    not null,
     language      text    not null,
     locale        text    not null,
-    specific_info text
+    info text
 );
 
 create unique index games_id_uindex
@@ -363,6 +368,20 @@ create unique index games_id_uindex
 
 create unique index info_{language}_letter_count_uindex
     on info_{language} (letter_count);");
+    }
+
+    private static void CreateThemesTable()
+    {
+        DatabaseController.ExecuteNonQuery(@"create table themes
+(
+    id   text not null
+        constraint themes_pk
+            primary key,
+    data text not null
+);
+
+create unique index themes_id_uindex
+    on themes (id);");
     }
 
     // ReSharper disable FieldCanBeMadeReadOnly.Local
