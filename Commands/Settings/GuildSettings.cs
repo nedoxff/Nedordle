@@ -8,21 +8,22 @@ using Nedordle.Helpers;
 namespace Nedordle.Commands.Settings;
 
 [SlashCommandGroup("settings", "Change personal & server settings!")]
-public partial class Settings: ExtendedCommandModule
+public partial class Settings : ExtendedCommandModule
 {
     private static bool _allowCreatingChannels;
     private static ulong _createCategory;
-    
+
     [SlashCommand("server", "Change settings of the server.")]
     public async Task ExecuteGuild(InteractionContext ctx)
     {
-        if (!GuildDatabaseHelper.GuildExists(ctx.Guild.Id))
+        if (GameDatabaseHelper.UserIsInGame(ctx.User.Id))
         {
-            await ctx.CreateResponseAsync(
-                SimpleDiscordEmbed.Error(Locale.GuildNotInDatabase), true);
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+                .AddEmbed(SimpleDiscordEmbed.Error("LOCALE_USER_IN_GAME"))
+                .AsEphemeral());
             return;
         }
-        
+
         if (ctx.Member == null)
         {
             await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
@@ -30,22 +31,35 @@ public partial class Settings: ExtendedCommandModule
                 .AsEphemeral());
             return;
         }
-        if((ctx.Member.Permissions & Permissions.Administrator) == 0)
+
+        var first = true;
+
+        if (!GuildDatabaseHelper.GuildExists(ctx.Guild.Id))
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Error(Locale.NotPermitted))
-                .AsEphemeral());
+            await ctx.CreateResponseAsync(
+                SimpleDiscordEmbed.Warning(Locale.Fixing), true);
+            Troubleshoot.FixGuild(ctx.Guild.Id);
+            first = false;
+        }
+
+        if ((ctx.Member.Permissions & Permissions.Administrator) == 0)
+        {
+            if (first)
+                await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+                    .AddEmbed(SimpleDiscordEmbed.Error(Locale.NotPermitted))
+                    .AsEphemeral());
+            else
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .AddEmbed(SimpleDiscordEmbed.Error(Locale.NotPermitted)));
             return;
         }
-        
+
         InitGuild(ctx.Guild.Id);
-        
-        var first = true;
-        DiscordMessage message;
-        
+
         while (true)
         {
             var (embed, buttons) = GetGuildData(ctx.Guild);
+            DiscordMessage message;
             if (first)
             {
                 await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
@@ -59,7 +73,7 @@ public partial class Settings: ExtendedCommandModule
             {
                 message = await ctx.EditResponseAsync(new DiscordWebhookBuilder()
                     .AddEmbed(embed)
-                    .AddComponents(buttons));   
+                    .AddComponents(buttons));
             }
 
             var result = await message.WaitForButtonAsync(ctx.User, TimeSpan.FromMinutes(1));
@@ -69,7 +83,7 @@ public partial class Settings: ExtendedCommandModule
                     .AddEmbed(SimpleDiscordEmbed.Error(Locale.TimedOut)));
                 break;
             }
-            
+
             await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage);
             var action = result.Result.Id;
 
@@ -79,7 +93,7 @@ public partial class Settings: ExtendedCommandModule
 
         await ctx.EditResponseAsync(new DiscordWebhookBuilder()
             .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelYellow, Locale.ApplyingChanges)));
-        
+
         GuildDatabaseHelper.SetAllowCreatingChannels(ctx.Guild.Id, _allowCreatingChannels);
         GuildDatabaseHelper.SetCreateCategory(ctx.Guild.Id, _createCategory);
 
@@ -93,18 +107,20 @@ public partial class Settings: ExtendedCommandModule
 
         var buttons = new List<DiscordButtonComponent>
         {
-            new(ButtonStyle.Secondary, "allowCreatingChannels", 
-                _allowCreatingChannels ? Locale.ServerSettingsDisallowCreatingChannels: Locale.ServerSettingsAllowCreatingChannels),
-            new(ButtonStyle.Secondary, "selectCreateCategory", 
-                Locale.ServerSettingsSelectCreateCategory),
+            new(ButtonStyle.Secondary, "allowCreatingChannels",
+                _allowCreatingChannels
+                    ? Locale.ServerSettingsDisallowCreatingChannels
+                    : Locale.ServerSettingsAllowCreatingChannels),
+            new(ButtonStyle.Secondary, "selectCreateCategory",
+                Locale.ServerSettingsChangeCreateCategory),
             new(ButtonStyle.Success, "apply", Locale.Apply)
         };
 
         var description = @$"
-{Locale.ServerSettingsInfoAllowCreatingChannels}: {(_allowCreatingChannels ? '✅': '❌')}
+{Locale.ServerSettingsInfoAllowCreatingChannels}: {(_allowCreatingChannels ? '✅' : '❌')}
 {Locale.ServerSettingsInfoCreateCategory}: `{categoryName} ({_createCategory})`
 ";
-        
+
         var embed = new DiscordEmbedBuilder()
             .WithTitle(Locale.ServerSettingsTitle)
             .WithColor(SimpleDiscordEmbed.PastelYellow)
@@ -135,7 +151,8 @@ public partial class Settings: ExtendedCommandModule
                 var categories = await GetCategories(ctx.Guild);
                 message = await ctx.EditResponseAsync(new DiscordWebhookBuilder()
                     .WithContent(DiscordEmoji.FromName(ctx.Client, ":point_down:"))
-                    .AddComponents(new DiscordSelectComponent("category_select", Locale.ServerSettingsSelectCategory,
+                    .AddComponents(new DiscordSelectComponent("category_select",
+                        Locale.ServerSettingsSelectCreateCategoryPlaceholder,
                         categories)));
 
                 var response = await message.WaitForSelectAsync(ctx.User, "category_select", TimeSpan.FromMinutes(1));

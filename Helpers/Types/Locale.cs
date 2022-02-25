@@ -25,11 +25,23 @@ public class Locale
 
     #endregion
 
+    #region Theme Information
+
+    // ReSharper disable once CollectionNeverUpdated.Global
+    // ReSharper disable once FieldCanBeMadeReadOnly.Global
+    public Dictionary<string, string> Themes = new();
+
+    #endregion
+
     #region Error Messages
 
     public string TimedOut;
-    public string GuildNotInDatabase;
     public string NotPermitted;
+    public string CannotLeaveWhilePlaying;
+    public string UserInGame;
+    public string NotSupported;
+    public string GameNotFound;
+    public string AlreadyStarted;
 
     #endregion
 
@@ -37,13 +49,15 @@ public class Locale
 
     public string Yes;
     public string No;
+    public string Fixing;
     public string Random;
     public string PleaseWait;
     public string ApplyingChanges;
     public string Done;
     public string None;
     public string Apply;
-    
+    public string Success;
+
     #endregion
 
     #region Command: Ping
@@ -65,19 +79,6 @@ public class Locale
 
     #endregion
 
-    #region Command: Locale
-
-    [JsonProperty(PropertyName = "SelectLocale_MainText")]
-    public string SelectLocaleMainText;
-
-    [JsonProperty(PropertyName = "SelectLocale_Placeholder")]
-    public string SelectLocalePlaceholder;
-
-    [JsonProperty(PropertyName = "SelectLocale_Success")]
-    public string SelectLocaleSuccess;
-
-    #endregion
-
     #region Command: Create
 
     [JsonProperty(PropertyName = "Create_SelectGameType")]
@@ -89,11 +90,14 @@ public class Locale
     [JsonProperty(PropertyName = "Create_SelectLength")]
     public string CreateSelectLength;
 
+    [JsonProperty(PropertyName = "Create_LengthDescription")]
+    public string CreateLengthDescription;
+
     [JsonProperty(PropertyName = "Create_DMs")]
     public string CreateDms;
 
-    [JsonProperty(PropertyName = "Create_Done")]
-    public string CreateDone;
+    [JsonProperty(PropertyName = "Create_DoneMultiplayer")]
+    public string CreateDoneMultiplayer;
 
     [JsonProperty(PropertyName = "Create_Creating")]
     public string CreateCreating; // :D
@@ -101,62 +105,97 @@ public class Locale
     [JsonProperty(PropertyName = "Create_LanguageDescription")]
     public string CreateLanguageDescription;
 
-    #endregion
-    
-    #region Command: Troubleshoot
+    [JsonProperty(PropertyName = "Create_SelectUserLimit")]
+    public string CreateSelectUserLimit;
 
-    [JsonProperty(PropertyName = "Troubleshoot_FindingIssues")]
-    public string TroubleshootFindingIssues;
-    [JsonProperty(PropertyName = "Troubleshoot_Server")]
-    public string TroubleshootServer;
-    [JsonProperty(PropertyName = "Troubleshoot_User")]
-    public string TroubleshootUser;
-    
-    [JsonProperty(PropertyName = "Troubleshoot_Fixing")]
-    public string TroubleshootFixing;
-    [JsonProperty(PropertyName = "Troubleshoot_Done")]
-    public string TroubleshootDone;
-    [JsonProperty(PropertyName = "Troubleshoot_NoIssues")]
-    public string TroubleshootNoIssues;
-    
     #endregion
-    
+
     #region Command: Server Settings
+
     [JsonProperty(PropertyName = "ServerSettings_DMs")]
     public string ServerSettingsDms;
+
     [JsonProperty(PropertyName = "ServerSettings_AllowCreatingChannels")]
     public string ServerSettingsAllowCreatingChannels;
+
     [JsonProperty(PropertyName = "ServerSettings_DisallowCreatingChannels")]
     public string ServerSettingsDisallowCreatingChannels;
-    [JsonProperty(PropertyName = "ServerSettings_SelectCreateCategory")]
-    public string ServerSettingsSelectCreateCategory;
+
+    [JsonProperty(PropertyName = "ServerSettings_ChangeCreateCategory")]
+    public string ServerSettingsChangeCreateCategory;
+
     [JsonProperty(PropertyName = "ServerSettings_Info_AllowCreatingChannels")]
     public string ServerSettingsInfoAllowCreatingChannels;
+
     [JsonProperty(PropertyName = "ServerSettings_Info_CreateCategory")]
     public string ServerSettingsInfoCreateCategory;
+
     [JsonProperty(PropertyName = "ServerSettings_Title")]
     public string ServerSettingsTitle;
-    [JsonProperty(PropertyName = "ServerSettings_SelectCategory")]
-    public string ServerSettingsSelectCategory;
+
+    [JsonProperty(PropertyName = "ServerSettings_SelectCreateCategoryPlaceholder")]
+    public string ServerSettingsSelectCreateCategoryPlaceholder;
+
     #endregion
-    
-    #region Game Type Information
+
+    #region Command: User Settings
+
+    [JsonProperty(PropertyName = "UserSettings_Title")]
+    public string UserSettingsTitle;
+
+    [JsonProperty(PropertyName = "UserSettings_Theme")]
+    public string UserSettingsTheme;
+
+    [JsonProperty(PropertyName = "UserSettings_ChangeTheme")]
+    public string UserSettingsChangeTheme;
+
+    [JsonProperty(PropertyName = "UserSettings_SelectThemePlaceholder")]
+    public string UserSettingsSelectThemePlaceholder;
+
+    #endregion
+
+    #region Game Information
+
     [JsonProperty(PropertyName = "Game_ChannelInfo")]
     public string GameChannelInfo;
+
     [JsonProperty(PropertyName = "Game_Start")]
     public string GameStart;
+
     [JsonProperty(PropertyName = "Game_InvalidLength")]
     public string GameInvalidLength;
+
     [JsonProperty(PropertyName = "Game_InvalidWord")]
     public string GameInvalidWord;
+
     [JsonProperty(PropertyName = "Game_Win")]
     public string GameWin;
+
     [JsonProperty(PropertyName = "Game_Defeat")]
     public string GameDefeat;
+
     [JsonProperty(PropertyName = "Game_PlayAgain")]
     public string GamePlayAgain;
+
     [JsonProperty(PropertyName = "Game_AlreadyUsed")]
     public string GameAlreadyUsed;
+
+    #endregion
+
+    #region Game (multiplayer) Information
+
+    [JsonProperty(PropertyName = "Game_MultiplayerInfo")]
+    public string GameMultiplayerInfo;
+
+    [JsonProperty(PropertyName = "Game_MultiplayerFull")]
+    public string GameMultiplayerFull;
+
+    [JsonProperty(PropertyName = "Game_MultiplayerJoined")]
+    public string GameMultiplayerJoined;
+
+    [JsonProperty(PropertyName = "Game_MultiplayerLeft")]
+    public string GameMultiplayerLeft;
+
     #endregion
 
     #region Locale Information

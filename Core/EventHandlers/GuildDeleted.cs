@@ -12,7 +12,7 @@ public class GuildDeleted
     public static async Task OnGuildDeleted(DiscordClient sender, GuildDeleteEventArgs e)
     {
         Log.Information("Kicked/banned/left from guild ({GuildId})", e.Guild.Id);
-        
+
         var guild = e.Guild;
         var embed = new DiscordEmbedBuilder()
             .WithColor(SimpleDiscordEmbed.PastelGreen)

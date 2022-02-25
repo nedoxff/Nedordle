@@ -18,17 +18,17 @@ public class SimpleDiscordEmbed
             .WithColor(color);
     }
 
-    public static DiscordEmbedBuilder Error(string description, string footer = "", string title = "")
+    public static DiscordEmbedBuilder Error(string description = "", string footer = "", string title = "")
     {
         return Colored(PastelRed, description, title, footer);
     }
 
-    public static DiscordEmbedBuilder Warning(string description, string footer = "", string title = "")
+    public static DiscordEmbedBuilder Warning(string description = "", string footer = "", string title = "")
     {
         return Colored(PastelYellow, description, title, footer);
     }
 
-    public static DiscordEmbedBuilder Success(string description, string footer = "", string title = "")
+    public static DiscordEmbedBuilder Success(string description = "", string footer = "", string title = "")
     {
         return Colored(PastelGreen, description, title, footer);
     }

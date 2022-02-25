@@ -1,6 +1,7 @@
 using System.Globalization;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
+using Nedordle.Helpers;
 using Nedordle.Helpers.Types;
 using Newtonsoft.Json;
 using Serilog;
@@ -39,7 +40,13 @@ public class SlashCommandErrored
 
         Log.Error("An error occured while executing a slash command. Error ID: {ErrorGuid}", guid);
 
-        await e.Context.Channel.SendMessageAsync(
-            $"An error occured while executing your command.\nAn error report has been created, please wait for further messages.\nYour error ID: `{guid}`");
+        if (await e.Context.GetOriginalResponseAsync() != null)
+            await e.Context.Channel.SendMessageAsync(
+                $"An error occured while executing your command.\nAn error report has been created, please wait for further messages.\nYour error ID: `{guid}`");
+        else
+            await e.Context.CreateResponseAsync(
+                SimpleDiscordEmbed.Error(
+                    $"An error occured while executing your command.\nAn error report has been created, please wait for further messages.\nYour error ID: `{guid}`"),
+                true);
     }
 }

@@ -1,14 +1,12 @@
 using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.Logging;
 using Nedordle.Commands.General;
 using Nedordle.Core.EventHandlers;
 using Nedordle.Database;
-using Nedordle.Drawer;
 using Nedordle.UptimeServer;
 using Serilog;
 using Serilog.Events;
@@ -18,12 +16,16 @@ namespace Nedordle.Core;
 public class Client
 {
     private const string DefaultServerResponseString = "I don't know what you expect to see here.";
+
+
+    private const string SerilogOutputFormat = "({Timestamp:HH:mm:ss}) [{Level}] {Message:lj}{NewLine}{Exception}";
     private static DiscordClient _client = null!;
     private static readonly string[] Files = {"latest_log.txt", "latest_log_debug.txt"};
 
     public static DiscordUser User => _client.CurrentUser;
 
     public static IReadOnlyDictionary<ulong, DiscordGuild> Guilds => _client.Guilds;
+
     //TODO: add command handlers
     public static async Task Start(Config config)
     {
@@ -55,14 +57,16 @@ public class Client
         _client.UseInteractivity();
         Log.Information("Initialized interactivity");
 
-        Log.Information("Loading locales..");
+
+        DatabaseController.Open("database.db");
+        Log.Debug("Opened connection with \"database.db\"");
+
         LocaleDatabaseHelper.LoadLocales();
+        ThemeDatabaseHelper.LoadThemes();
 
         await _client.ConnectAsync();
         await Task.Delay(-1);
     }
-
-    
 
     private static void InitializeLogger()
     {
@@ -71,12 +75,12 @@ public class Client
                 File.Delete(file);
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
-            .WriteTo.Console()
+            .WriteTo.Console(LogEventLevel.Debug, SerilogOutputFormat)
 #else
-            .WriteTo.Console(LogEventLevel.Information)
+            .WriteTo.Console(LogEventLevel.Information, SerilogOutputFormat)
 #endif
-            .WriteTo.File("latest_log.txt", LogEventLevel.Information)
-            .WriteTo.File("latest_log_debug.txt", LogEventLevel.Debug)
+            .WriteTo.File("latest_log.txt", LogEventLevel.Information, SerilogOutputFormat)
+            .WriteTo.File("latest_log_debug.txt", LogEventLevel.Debug, SerilogOutputFormat)
             .MinimumLevel.Debug()
             .CreateLogger();
         Log.Information("Logger initialized");

@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 using Nedordle.Cli.DatabaseConfiguration;
 using Nedordle.Core;
-using Nedordle.Drawer;
 using Spectre.Console;
 using Spectre.Console.Cli;
 

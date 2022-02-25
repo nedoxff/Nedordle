@@ -4,24 +4,40 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Nedordle.Database;
 using Nedordle.Helpers;
+using Nedordle.Helpers.Types;
 
 namespace Nedordle.Commands.Settings;
 
-public partial class Settings: ExtendedCommandModule
+public partial class Settings : ExtendedCommandModule
 {
     private string _theme;
-    
+
     [SlashCommand("user", "Change personal settings.")]
     public async Task ExecuteUser(InteractionContext ctx)
     {
-        InitUser(ctx.User.Id);
-        
         var first = true;
-        DiscordMessage message;
-        
+
+        if (GameDatabaseHelper.UserIsInGame(ctx.User.Id))
+        {
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+                .AddEmbed(SimpleDiscordEmbed.Error("LOCALE_USER_IN_GAME"))
+                .AsEphemeral());
+            return;
+        }
+
+        if (!UserDatabaseHelper.Exists(ctx.User.Id))
+        {
+            await ctx.CreateResponseAsync(SimpleDiscordEmbed.Warning(Locale.Fixing), true);
+            Troubleshoot.FixUser(ctx.User.Id);
+            first = false;
+        }
+
+        InitUser(ctx.User.Id);
+
         while (true)
         {
             var (embed, buttons) = GetUserData(ctx.User);
+            DiscordMessage message;
             if (first)
             {
                 await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
@@ -35,7 +51,7 @@ public partial class Settings: ExtendedCommandModule
             {
                 message = await ctx.EditResponseAsync(new DiscordWebhookBuilder()
                     .AddEmbed(embed)
-                    .AddComponents(buttons));   
+                    .AddComponents(buttons));
             }
 
             var result = await message.WaitForButtonAsync(ctx.User, TimeSpan.FromMinutes(1));
@@ -45,7 +61,7 @@ public partial class Settings: ExtendedCommandModule
                     .AddEmbed(SimpleDiscordEmbed.Error(Locale.TimedOut)));
                 break;
             }
-            
+
             await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage);
             var action = result.Result.Id;
 
@@ -55,8 +71,8 @@ public partial class Settings: ExtendedCommandModule
 
         await ctx.EditResponseAsync(new DiscordWebhookBuilder()
             .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelYellow, Locale.ApplyingChanges)));
-        
-        //APPLY
+
+        UserDatabaseHelper.SetTheme(ctx.User.Id, _theme);
 
         await ctx.EditResponseAsync(new DiscordWebhookBuilder()
             .AddEmbed(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen, Locale.Done)));
@@ -73,6 +89,21 @@ public partial class Settings: ExtendedCommandModule
         {
             case "selectTheme":
             {
+                var themes = GetThemes();
+                message = await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                    .WithContent(DiscordEmoji.FromName(ctx.Client, ":point_down:"))
+                    .AddComponents(new DiscordSelectComponent("select_theme", Locale.UserSettingsSelectThemePlaceholder,
+                        themes)));
+                var response = await message.WaitForSelectAsync(ctx.User, "select_theme", TimeSpan.FromMinutes(1));
+                if (response.TimedOut)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                        .AddEmbed(SimpleDiscordEmbed.Error(Locale.TimedOut)));
+                    return true;
+                }
+
+                await response.Result.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage);
+                _theme = response.Result.Values[0];
                 return false;
             }
             case "apply":
@@ -86,21 +117,27 @@ public partial class Settings: ExtendedCommandModule
     {
         var buttons = new List<DiscordButtonComponent>
         {
-            new(ButtonStyle.Secondary, "selectTheme", "LOCALE_SELECT_THEME"),
+            new(ButtonStyle.Secondary, "selectTheme", Locale.UserSettingsChangeTheme),
             new(ButtonStyle.Success, "apply", Locale.Apply)
         };
 
         var description = $@"
-{{LOCALE_THEME}}: `{_theme}`
+{Locale.UserSettingsTheme}: `{_theme}`
 ";
-        
+
         var embed = new DiscordEmbedBuilder()
-            .WithTitle("LOCALE_USER_SETTINGS")
+            .WithTitle(Locale.UserSettingsTitle)
             .WithColor(SimpleDiscordEmbed.PastelYellow)
             .WithDescription(description)
             .WithTimestamp(DateTime.Now)
             .Build();
 
         return (embed, buttons);
+    }
+
+    private IEnumerable<DiscordSelectComponentOption> GetThemes()
+    {
+        return Theme.Themes.Select(x => new DiscordSelectComponentOption(Locale.Themes[x.Key], x.Key, null, false,
+            new DiscordComponentEmoji(DiscordEmoji.FromUnicode(x.Value.CorrectEmoji))));
     }
 }

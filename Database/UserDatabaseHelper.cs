@@ -13,12 +13,19 @@ public class UserDatabaseHelper
     public static void Add(ulong id)
     {
         Log.Debug("Adding user (with default values) with ID {UserId}", id);
-        DatabaseController.ExecuteNonQuery($"replace into users(id, games, level, theme) values({id}, 0, 0, 'default')");
+        DatabaseController.ExecuteNonQuery(
+            $"replace into users(id, games, level, theme) values({id}, 0, 0, 'default')");
     }
 
     public static string GetTheme(ulong id)
     {
         Log.Debug("Getting theme for user with ID {UserId}", id);
         return DatabaseController.ExecuteScalar<string>($"select theme from users where id = {id}")!;
+    }
+
+    public static void SetTheme(ulong id, string theme)
+    {
+        Log.Debug("Setting theme for user with ID {UserId} to {Theme}", id, theme);
+        DatabaseController.ExecuteNonQuery($"update users set theme = '{theme}' where id = {id}");
     }
 }

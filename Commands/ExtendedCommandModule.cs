@@ -1,5 +1,4 @@
 using DSharpPlus.SlashCommands;
-using Nedordle.Database;
 using Nedordle.Helpers.Types;
 using Serilog;
 

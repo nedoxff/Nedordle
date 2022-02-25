@@ -22,6 +22,7 @@ public static class InteractiveConfigure
         ConfigureDatabase();
         DownloadRepository();
         CopyResources();
+        ConfigureThemes();
         ConfigureLocales();
         ConfigureLanguages();
 
@@ -41,6 +42,22 @@ public static class InteractiveConfigure
                 var filename = Path.GetFileName(file);
                 ctx.Status($"Copying {filename}..");
                 File.Copy(file, Path.Combine(Environment.CurrentDirectory, "Resources", filename));
+            }
+        });
+    }
+
+    private static void ConfigureThemes()
+    {
+        AnsiConsole.Status().Spinner(Spinner.Known.Dots2).Start("Importing themes..", ctx =>
+        {
+            var themesFile = Path.Combine(_dataFolder, "Themes.json");
+            if (!File.Exists(themesFile))
+                throw new Exception("NedordleData did not contain a Themes.json file!");
+            var themes = JsonConvert.DeserializeObject<List<Theme>>(File.ReadAllText(themesFile));
+            foreach (var theme in themes!)
+            {
+                var jsonData = JsonConvert.SerializeObject(theme).Replace("'", "''");
+                DatabaseController.ExecuteNonQuery($"insert into themes(id, data) values('{theme.Id}', '{jsonData}')");
             }
         });
     }
@@ -94,8 +111,11 @@ public static class InteractiveConfigure
                     DatabaseController.DropTable("themes");
                     foreach (var table in tables.Where(x => x.StartsWith("dictionary_")))
                         DatabaseController.DropTable(table);
+                    foreach (var table in tables.Where(x => x.StartsWith("info_")))
+                        DatabaseController.DropTable(table);
                     CreateLanguagesTable();
                     CreateLocalesTable();
+                    CreateThemesTable();
                 }
                 else
                 {
@@ -348,7 +368,6 @@ create unique index locales_id_uindex
     players       text    not null,
     player_data   text    not null,
     language      text    not null,
-    locale        text    not null,
     info text
 );
 

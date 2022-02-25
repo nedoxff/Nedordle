@@ -1,4 +1,3 @@
-using System.Data.Entity.Core.Metadata.Edm;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -13,7 +12,7 @@ public class GuildCreated
     public static async Task OnGuildCreated(DiscordClient sender, GuildCreateEventArgs e)
     {
         Log.Information("Joined new guild ({GuildId})", e.Guild.Id);
-        
+
         var guild = e.Guild;
         var embed = new DiscordEmbedBuilder()
             .WithColor(SimpleDiscordEmbed.PastelYellow)

@@ -8,22 +8,27 @@ public abstract class GameHandler
 {
     public static Dictionary<string, GameHandler> Handlers = new();
 
-    public string GameType;
-    public Dictionary<string, object> Info = new();
+    public readonly Dictionary<string, object> Info = new();
+
+    public string GameType { get; init; }
     public string Id { get; init; }
-    public List<Player> Players { get; } = new();
+    public Dictionary<ulong, Player> Players { get; } = new();
     public DiscordChannel Channel { get; init; }
     public string Language { get; init; }
-    public string LocaleString { get; init; }
-    public Locale Locale => Locale.Locales[LocaleString];
+    public bool Ended { get; protected set; } = false;
+    public bool Playing { get; protected set; } = false;
 
-    public abstract Task OnCreate();
-    public abstract Task OnJoined(DiscordUser user);
-    public abstract Task OnLeft(DiscordUser user);
+    public abstract Task OnCreate(DiscordUser creator, Locale locale);
+    public abstract Task OnJoined(DiscordChannel callerChannel, DiscordUser user, Locale locale);
+    public abstract Task OnLeft(DiscordChannel callerChannel, DiscordUser user, Locale locale);
     public abstract Task OnStart();
     public abstract Task OnEnd();
+    public abstract Task OnCleanup();
     public abstract Task OnInput(DiscordUser user, string input);
-    public abstract string BuildResult();
+    public abstract string BuildResult(Player player);
 
-    public void Update() => GameDatabaseHelper.UpdateGame(this);
+    public void Update()
+    {
+        GameDatabaseHelper.UpdateGame(this);
+    }
 }

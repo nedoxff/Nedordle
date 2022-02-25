@@ -2,15 +2,16 @@ namespace Nedordle.Helpers.Types;
 
 public class Theme
 {
-    public string ShortName;
-    public string FullName;
-    
+    public static Dictionary<string, Theme> Themes = new();
+
     public string BackgroundColor;
+    public string CloseColor;
+    public string CloseEmoji;
     public string CorrectColor;
-    public string SimilarColor;
-    public string WrongColor;
 
     public string CorrectEmoji;
-    public string SimilarEmoji;
+
+    public string Id;
+    public string WrongColor;
     public string WrongEmoji;
 }

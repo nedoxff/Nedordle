@@ -32,4 +32,17 @@ public class LanguageDatabaseHelper
         reader.Close();
         return list;
     }
+
+    public static Dictionary<int, int> GetLengthOptions(string language)
+    {
+        Log.Debug("Getting language length options");
+        var reader = DatabaseController.ExecuteReader($"select * from info_{language}");
+
+        var result = new Dictionary<int, int>();
+        while (reader.Read())
+            result[reader.GetInt32(0)] = reader.GetInt32(1);
+
+        reader.Close();
+        return result;
+    }
 }

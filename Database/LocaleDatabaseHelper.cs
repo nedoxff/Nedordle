@@ -8,11 +8,7 @@ public class LocaleDatabaseHelper
 {
     public static void LoadLocales()
     {
-        if (DatabaseController.Connection == null)
-        {
-            DatabaseController.Open("database.db");
-            Log.Debug("Opened connection with \"database.db\"");
-        }
+        Log.Information("Loading locales");
 
         var reader = DatabaseController.ExecuteReader("select * from locales");
         while (reader.Read())

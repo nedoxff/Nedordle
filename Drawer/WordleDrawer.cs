@@ -1,7 +1,7 @@
 using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 using System.Text.Unicode;
+using Nedordle.Helpers.Types;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
@@ -15,15 +15,16 @@ public class WordleDrawer
 {
     private const int BlockOffset = 69;
     private const int BlockMiddleXOffset = 32;
-    private const int BlockMiddleYOffset = 37;
     private const int FontSize = 32;
 
-    public static MemoryStream Generate(string markup)
+    public static MemoryStream Generate(string markup, Theme theme)
     {
-        //markup = new string(markup.ToCharArray().Where(c => !char.IsPunctuation(c)).ToArray());
+        if (markup.EndsWith("\n"))
+            markup = markup[..markup.LastIndexOf("\n", StringComparison.InvariantCulture)];
+
         var split = Split(markup);
         split = split.Where(x => !string.IsNullOrEmpty(x)).Select(s => s.Trim(' ')).ToArray();
-        
+
         var collection = new FontCollection();
         collection.Add(IsInRange(markup, UnicodeRanges.BasicLatin)
             ? "Resources/wordle_font.ttf"
@@ -38,7 +39,7 @@ public class WordleDrawer
 
         image.Mutate(i =>
         {
-            i.Clear(Color.FromRgba(18, 18, 19, 255));
+            i.Clear(Color.ParseHex(theme.BackgroundColor));
 
             var x = 5;
             var y = 5;
@@ -49,9 +50,9 @@ public class WordleDrawer
                 {
                     currentColor = s switch
                     {
-                        "[c]" => Color.FromRgba(83, 141, 78, 255),
-                        "[w]" => Color.FromRgba(58, 58, 60, 255),
-                        "[d]" => Color.FromRgba(181, 159, 59, 255),
+                        "[c]" => Color.ParseHex(theme.CorrectColor),
+                        "[w]" => Color.ParseHex(theme.WrongColor),
+                        "[d]" => Color.ParseHex(theme.CloseColor),
                         "[/]" => null,
                         _ => currentColor
                     };
@@ -66,7 +67,7 @@ public class WordleDrawer
                         y += BlockOffset;
                         continue;
                     }
-                    
+
                     if (currentColor == null)
                         throw new Exception("Invalid input string! (detected [[/]], but no color next)");
 
@@ -88,8 +89,13 @@ public class WordleDrawer
         return result;
     }
 
-    private static string[] Split(string markup) => Regex.Split(markup, @"(\[.\])");
+    private static string[] Split(string markup)
+    {
+        return Regex.Split(markup, @"(\[.\])");
+    }
 
-    private static bool IsInRange(string input, UnicodeRange range) =>
-        input.All(x => x >= range.FirstCodePoint && x <= range.FirstCodePoint + range.Length);
+    private static bool IsInRange(string input, UnicodeRange range)
+    {
+        return input.All(x => x >= range.FirstCodePoint && x <= range.FirstCodePoint + range.Length);
+    }
 }

@@ -26,8 +26,16 @@ public class DatabaseController
     private static SQLiteCommand CreateCommand(string query, params object[] args)
     {
         ThrowIfNull();
-        var command = Connection.CreateCommand();
+        var command = Connection!.CreateCommand();
         command.CommandText = string.Format(query, args);
+        return command;
+    }
+
+    private static SQLiteCommand CreateCommand(string query)
+    {
+        ThrowIfNull();
+        var command = Connection!.CreateCommand();
+        command.CommandText = query;
         return command;
     }
 
@@ -35,6 +43,14 @@ public class DatabaseController
     {
         ThrowIfNull();
         var command = CreateCommand(query, args);
+        var changed = command.ExecuteNonQuery();
+        return changed;
+    }
+
+    public static int ExecuteNonQuery(string query)
+    {
+        ThrowIfNull();
+        var command = CreateCommand(query);
         var changed = command.ExecuteNonQuery();
         return changed;
     }
@@ -47,9 +63,24 @@ public class DatabaseController
         return (T?) obj;
     }
 
+    public static T? ExecuteScalar<T>(string query)
+    {
+        ThrowIfNull();
+        var command = CreateCommand(query);
+        var obj = command.ExecuteScalar();
+        return (T?) obj;
+    }
+
     public static SQLiteDataReader ExecuteReader(string query, params object[] args)
     {
         var command = CreateCommand(query, args);
+        var reader = command.ExecuteReader();
+        return reader;
+    }
+
+    public static SQLiteDataReader ExecuteReader(string query)
+    {
+        var command = CreateCommand(query);
         var reader = command.ExecuteReader();
         return reader;
     }
