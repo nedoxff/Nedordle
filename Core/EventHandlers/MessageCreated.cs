@@ -19,7 +19,7 @@ public static class MessageCreated
                 Log.Error("Could not find game with ID {GameId} in GameHandler.Handlers! (did the bot restart?)", game);
             else
                 new Task(() =>
-                        GameHandler.Handlers[game].OnInput(e.Author, e.Message.Content.ToLower()).GetAwaiter()
+                        GameHandler.Handlers[game].OnInput(e.Channel, e.Author, e.Message.Content.ToLower()).GetAwaiter()
                             .GetResult())
                     .Start();
         }

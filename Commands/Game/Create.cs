@@ -41,18 +41,26 @@ public class Create : ExtendedCommandModule
         if (string.IsNullOrEmpty(gameType)) return;
 
         var language = await GetLanguage(ctx);
+        if (string.IsNullOrEmpty(language)) return;
 
         var length = 0;
         if (Locale.GameTypes[gameType].AllowDifferentLength)
             length = await GetLength(ctx, language);
+        if (length == -1) return;
 
         var userLimit = 0;
         var multiplayer = Locale.GameTypes[gameType].IsMultiplayer;
         if (multiplayer)
             userLimit = await GetUserLimit(ctx);
+        if (userLimit == -1) return;
+
+        var attemptLimit = 0;
+        if (Locale.GameTypes[gameType].AllowDifferentAttempts)
+            attemptLimit = await GetAttemptLimit(ctx);
+        if (attemptLimit == -2) return;
 
         bool dms;
-        if (ctx.Channel.IsPrivate || !GuildDatabaseHelper.GetAllowCreatingChannels(ctx.Guild.Id))
+        if (ctx.Channel.IsPrivate || !GuildDatabaseHelper.GetAllowCreatingChannels(ctx.Guild.Id) || multiplayer)
         {
             dms = true;
         }
@@ -61,13 +69,6 @@ public class Create : ExtendedCommandModule
             var resultDms = await GetPlayInDMs(ctx);
             if (resultDms == null) return;
             dms = (bool) resultDms;
-        }
-
-        if (multiplayer && dms)
-        {
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Error(Locale.NotSupported)));
-            return;
         }
 
         await ctx.EditResponseAsync(new DiscordWebhookBuilder()
@@ -92,13 +93,17 @@ public class Create : ExtendedCommandModule
         GameHandler? handler = gameType switch
         {
             "usual" => new CustomGameHandler
-                {Channel = channel, Id = id, Language = language, Length = 5, GameType = "usual"},
+                {Channel = channel, Id = id, Language = language, Length = 5, AttemptLimit = 6, GameType = "usual"},
             "custom" => new CustomGameHandler
-                {Channel = channel, Id = id, Language = language, Length = length, GameType = "custom"},
+                {Channel = channel, Id = id, Language = language, Length = length, AttemptLimit = attemptLimit, GameType = "custom"},
             "teamrace" => new TeamRaceGameHandler
             {
-                Channel = channel, Id = id, Language = language, Length = length, UserLimit = userLimit,
+                Id = id, Language = language, Length = length, UserLimit = userLimit,
                 GameType = "teamrace"
+            },
+            "teamwork" => new TeamworkGameHandler
+            {
+                Id = id, Language = language, Length = length, AttemptLimit = attemptLimit, GameType = "teamwork", UserLimit = userLimit
             },
             _ => null
         };
@@ -205,6 +210,43 @@ public class Create : ExtendedCommandModule
         return -1;
     }
 
+    private async Task<int> GetAttemptLimit(BaseContext ctx)
+    {
+        var message = await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+            .WithContent(DiscordEmoji.FromName(ctx.Client, ":point_down:"))
+            .AddComponents(new DiscordSelectComponent("select_attempt_limit", Locale.CreateSelectAttemptLimit,
+                GetAttemptLimitOptions())));
+        
+        var result = await message.WaitForSelectAsync(ctx.User, "select_attempt_limit", TimeSpan.FromMinutes(1));
+        await result.Result.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+        if (!result.TimedOut)
+        {
+            var id = result.Result.Values[0];
+            switch (id)
+            {
+                case "unlimited":
+                    return -1;
+                case "custom":
+                    var interaction = ctx.Client.GetInteractivity();
+                    message = await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                        .WithContent(Locale.CreateEnterAttemptLimit));
+                    var messageResult = await interaction.WaitForMessageAsync(m =>
+                        m.Author.Id == ctx.User.Id && m.Channel.Id == message.Channel.Id && int.TryParse(m.Content, out var l) && l > 0, TimeSpan.FromMinutes(1));
+                    
+                    if (!messageResult.TimedOut) return int.Parse(messageResult.Result.Content);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+                        .AddEmbed(SimpleDiscordEmbed.Error(Locale.TimedOut)));
+                    return -2;
+
+                default:
+                    return int.Parse(result.Result.Values[0]);
+            }
+        }
+        await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+            .AddEmbed(SimpleDiscordEmbed.Error(Locale.TimedOut)));
+        return -2;
+    }
+
     private DiscordSelectComponentOption SimpleOption(string value)
     {
         return new(value, value.ToLower());
@@ -214,6 +256,16 @@ public class Create : ExtendedCommandModule
     {
         var list = new List<DiscordSelectComponentOption>();
         for (var i = 2; i <= 10; i++)
+            list.Add(SimpleOption(i.ToString()));
+        return list;
+    }
+
+    private IEnumerable<DiscordSelectComponentOption> GetAttemptLimitOptions()
+    {
+        var list = new List<DiscordSelectComponentOption>();
+        list.Add(SimpleOption(Locale.Custom));
+        list.Add(SimpleOption(Locale.Unlimited));
+        for(var i = 2; i <= 15; i++)
             list.Add(SimpleOption(i.ToString()));
         return list;
     }

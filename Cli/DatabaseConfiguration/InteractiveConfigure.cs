@@ -362,8 +362,6 @@ create unique index locales_id_uindex
     id            text    not null
         constraint games_pk
             primary key,
-    channel       integer not null,
-    guild         integer not null,
     type          text    not null,
     players       text    not null,
     player_data   text    not null,

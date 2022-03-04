@@ -1,10 +1,12 @@
 using System.Globalization;
+using DSharpPlus.Exceptions;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using Nedordle.Helpers;
 using Nedordle.Helpers.Types;
 using Newtonsoft.Json;
 using Serilog;
+using Spectre.Console;
 
 namespace Nedordle.Core.EventHandlers;
 
@@ -39,6 +41,9 @@ public class SlashCommandErrored
         await File.WriteAllTextAsync("errors.json", serialized);
 
         Log.Error("An error occured while executing a slash command. Error ID: {ErrorGuid}", guid);
+        
+        if(e.Exception is BadRequestException bre)
+            Log.Error(bre.JsonMessage);
 
         if (await e.Context.GetOriginalResponseAsync() != null)
             await e.Context.Channel.SendMessageAsync(

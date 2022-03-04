@@ -9,4 +9,5 @@ public struct GameType
     public string Emoji;
     public bool IsMultiplayer;
     public bool AllowDifferentLength;
+    public bool AllowDifferentAttempts;
 }

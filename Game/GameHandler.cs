@@ -13,7 +13,6 @@ public abstract class GameHandler
     public string GameType { get; init; }
     public string Id { get; init; }
     public Dictionary<ulong, Player> Players { get; } = new();
-    public DiscordChannel Channel { get; init; }
     public string Language { get; init; }
     public bool Ended { get; protected set; } = false;
     public bool Playing { get; protected set; } = false;
@@ -24,11 +23,13 @@ public abstract class GameHandler
     public abstract Task OnStart();
     public abstract Task OnEnd();
     public abstract Task OnCleanup();
-    public abstract Task OnInput(DiscordUser user, string input);
+    public abstract Task OnInput(DiscordChannel callerChannel, DiscordUser user, string input);
+    private protected abstract void UpdateInfo();
     public abstract string BuildResult(Player player);
 
     public void Update()
     {
+        UpdateInfo();
         GameDatabaseHelper.UpdateGame(this);
     }
 }

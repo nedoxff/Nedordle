@@ -4,15 +4,18 @@ using Nedordle.Core;
 using Nedordle.Database;
 using Nedordle.Drawer;
 using Nedordle.Helpers;
+using Nedordle.Helpers.Game;
 using Nedordle.Helpers.Types;
 
 namespace Nedordle.Game.Handlers;
 
 public class CustomGameHandler : GameHandler
 {
+    public DiscordChannel Channel { get; init; }
     private string _answer = "";
     private DiscordMessage? _responseMessage;
     public int Length { get; init; }
+    public int AttemptLimit { get; init; }
 
     public override Task OnCreate(DiscordUser creator, Locale locale)
     {
@@ -27,8 +30,6 @@ public class CustomGameHandler : GameHandler
 
         _answer = DictionaryDatabaseHelper.GetWord(Language, Length);
         _responseMessage = null;
-        Info["Answer"] = _answer;
-        Info["ResponseMessage"] = 0;
 
         Update();
         return Task.CompletedTask;
@@ -65,7 +66,7 @@ public class CustomGameHandler : GameHandler
         var generated = WordleDrawer.Generate(Players.First().Value.GuessString, Players.First().Value.Theme);
         generated.Seek(0, SeekOrigin.Begin);
         await Channel.SendMessageAsync(new DiscordMessageBuilder()
-            .WithFile("result.png", generated));
+            .WithFile($"nedordle_{Id}_result.png", generated));
 
         await Channel.SendMessageAsync(BuildResult(Players.First().Value));
         await OnCleanup();
@@ -83,9 +84,11 @@ public class CustomGameHandler : GameHandler
         GameDatabaseHelper.RemoveGame(Id);
     }
 
-    public override async Task OnInput(DiscordUser user, string input)
+    public override async Task OnInput(DiscordChannel caller, DiscordUser user, string input)
     {
         if (Ended) return;
+
+        if (input.Length != Length) return;
 
         if (!DictionaryDatabaseHelper.Exists(Language, input))
         {
@@ -116,9 +119,9 @@ public class CustomGameHandler : GameHandler
             return;
         }
 
-        if (Players.First().Value.Guesses.Count == 6)
+        if (Players.First().Value.Guesses.Count == AttemptLimit)
         {
-            await Channel.SendMessageAsync(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelYellow,
+            await Channel.SendMessageAsync(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelRed,
                 string.Format(Players.First().Value.Locale.GameDefeat, _answer)));
             await OnEnd();
             return;
@@ -127,39 +130,15 @@ public class CustomGameHandler : GameHandler
         var stream = WordleDrawer.Generate(Players.First().Value.GuessString, Players.First().Value.Theme);
         stream.Seek(0, SeekOrigin.Begin);
         _responseMessage = await Channel.SendMessageAsync(new DiscordMessageBuilder()
-            .WithFile($"nedordle_usual_{Id}.png", stream));
-        Info["ResponseMessage"] = _responseMessage.Id;
+            .WithFile($"nedordle_custom_{Id}.png", stream));
         Update();
     }
 
-    public override string BuildResult(Player player)
-    {
-        var guessCount = player.Guesses.Count;
-        string guessString;
-        if (guessCount < 6) guessString = guessCount.ToString();
-        else guessString = player.Guesses.Last().CleanOutput.All(x => x == 'c') ? "6" : "X";
-
-        var theme = player.Theme;
-        var str = $"Nedordle ({player.Locale.GameTypes[GameType].Name}) {guessString}/6\n\n";
-        foreach (var guess in player.Guesses.Select(x => x.CleanOutput))
-        {
-            foreach (var c in guess)
-                switch (c)
-                {
-                    case 'w':
-                        str += theme.WrongEmoji;
-                        break;
-                    case 'd':
-                        str += theme.CloseEmoji;
-                        break;
-                    case 'c':
-                        str += theme.CorrectEmoji;
-                        break;
-                }
-
-            str += '\n';
-        }
-
-        return str;
+    private protected override void UpdateInfo()
+    {   
+        Info["Answer"] = _answer;
+        Info["ResponseMessage"] = _responseMessage == null ? 0: _responseMessage.Id;
     }
+
+    public override string BuildResult(Player player) => EmojiResultBuilder.BuildDefault(player, player.Locale.GameTypes[GameType].Name, AttemptLimit);
 }

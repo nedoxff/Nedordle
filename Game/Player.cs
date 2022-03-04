@@ -10,8 +10,7 @@ public class Player
 {
     public readonly List<Guess> Guesses = new();
     public string GuessString = "";
-    public Locale Locale;
-
+    [JsonIgnore] public Locale Locale;
     [JsonIgnore] public DiscordUser User;
 
     public ulong UserId;

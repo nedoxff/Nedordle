@@ -57,6 +57,8 @@ public class Locale
     public string None;
     public string Apply;
     public string Success;
+    public string Custom;
+    public string Unlimited;
 
     #endregion
 
@@ -107,6 +109,12 @@ public class Locale
 
     [JsonProperty(PropertyName = "Create_SelectUserLimit")]
     public string CreateSelectUserLimit;
+
+    [JsonProperty(PropertyName = "Create_SelectAttemptLimit")]
+    public string CreateSelectAttemptLimit;
+    
+    [JsonProperty(PropertyName = "Create_EnterAttemptLimit")]
+    public string CreateEnterAttemptLimit;
 
     #endregion
 
@@ -161,10 +169,7 @@ public class Locale
 
     [JsonProperty(PropertyName = "Game_Start")]
     public string GameStart;
-
-    [JsonProperty(PropertyName = "Game_InvalidLength")]
-    public string GameInvalidLength;
-
+    
     [JsonProperty(PropertyName = "Game_InvalidWord")]
     public string GameInvalidWord;
 
@@ -196,6 +201,24 @@ public class Locale
     [JsonProperty(PropertyName = "Game_MultiplayerLeft")]
     public string GameMultiplayerLeft;
 
+    [JsonProperty(PropertyName = "Game_MultiplayerWinner")]
+    public string GameMultiplayerWinner;
+
+    #endregion
+    
+    #region Game Type: teamwork
+    [JsonProperty(PropertyName = "Game_Teamwork_Start")]
+    public string GameTeamworkStart;
+    [JsonProperty(PropertyName = "Game_Teamwork_YourTurn")]
+    public string GameTeamworkYourTurn;
+    [JsonProperty(PropertyName = "Game_Teamwork_NotYourTurn")]
+    public string GameTeamworkNotYourTurn;
+    [JsonProperty(PropertyName = "Game_Teamwork_AnswerSent")]
+    public string GameTeamworkAnswerSent;
+    [JsonProperty(PropertyName = "Game_Teamwork_Win")]
+    public string GameTeamworkWin;
+    [JsonProperty(PropertyName = "Game_Teamwork_Defeat")]
+    public string GameTeamworkDefeat;
     #endregion
 
     #region Locale Information

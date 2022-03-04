@@ -14,15 +14,15 @@ public class GameDatabaseHelper
         var playerData = JsonConvert.SerializeObject(handler.Players).Replace("'", "''");
         var info = JsonConvert.SerializeObject(handler.Info).Replace("'", "''");
         DatabaseController.ExecuteNonQuery(
-            "replace into games(id, channel, guild, type, players, player_data, language, info) values('{0}', {1}, {2}, '{3}', '{4}', '{5}', '{6}', '{7}')",
-            handler.Id, handler.Channel.Id, handler.Channel.GuildId ?? 0, handler.GameType, players, playerData,
+            "replace into games(id, type, players, player_data, language, info) values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}')",
+            handler.Id, handler.GameType, players, playerData,
             handler.Language, info);
     }
 
     public static string GetGameFromInput(DiscordChannel channel, DiscordUser user)
     {
         var reader =
-            DatabaseController.ExecuteReader($"select distinct id, players from games where channel = {channel.Id}");
+            DatabaseController.ExecuteReader("select distinct id, players from games");
         if (!reader.Read())
         {
             reader.Close();
