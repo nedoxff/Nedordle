@@ -32,10 +32,6 @@ public class Client
         InitializeLogger();
         CheckResources();
 
-        UptimeListener.Start(config.Contains("SERVER_RESPONSE_STRING")
-            ? config["SERVER_RESPONSE_STRING"]
-            : DefaultServerResponseString);
-
         var logFactory = new LoggerFactory().AddSerilog();
         _client = new DiscordClient(new DiscordConfiguration
         {
