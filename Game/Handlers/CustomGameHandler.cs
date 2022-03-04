@@ -42,16 +42,7 @@ public class CustomGameHandler : GameHandler
         await OnStart();
     }
 
-    public override async Task OnLeft(DiscordChannel callerChannel, DiscordUser user, Locale locale)
-    {
-        if (Playing)
-        {
-            await Channel.SendMessageAsync(locale.CannotLeaveWhilePlaying);
-            return;
-        }
-
-        await OnEnd();
-    }
+    public override async Task OnLeft(DiscordChannel callerChannel, DiscordUser user, Locale locale) => await OnEnd();
 
     public override async Task OnStart()
     {
@@ -62,13 +53,6 @@ public class CustomGameHandler : GameHandler
     public override async Task OnEnd()
     {
         Ended = true;
-
-        var generated = WordleDrawer.Generate(Players.First().Value.GuessString, Players.First().Value.Theme);
-        generated.Seek(0, SeekOrigin.Begin);
-        await Channel.SendMessageAsync(new DiscordMessageBuilder()
-            .WithFile($"nedordle_{Id}_result.png", generated));
-
-        await Channel.SendMessageAsync(BuildResult(Players.First().Value));
         await OnCleanup();
     }
 
@@ -115,6 +99,12 @@ public class CustomGameHandler : GameHandler
         {
             await Channel.SendMessageAsync(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelGreen,
                 Players.First().Value.Locale.GameWin));
+            var generated = WordleDrawer.Generate(Players.First().Value.GuessString, Players.First().Value.Theme);
+            generated.Seek(0, SeekOrigin.Begin);
+            await Channel.SendMessageAsync(new DiscordMessageBuilder()
+                .WithFile($"nedordle_{Id}_result.png", generated));
+
+            await Channel.SendMessageAsync(BuildResult(Players.First().Value));
             await OnEnd();
             return;
         }
@@ -123,6 +113,12 @@ public class CustomGameHandler : GameHandler
         {
             await Channel.SendMessageAsync(SimpleDiscordEmbed.Colored(SimpleDiscordEmbed.PastelRed,
                 string.Format(Players.First().Value.Locale.GameDefeat, _answer)));
+            var generated = WordleDrawer.Generate(Players.First().Value.GuessString, Players.First().Value.Theme);
+            generated.Seek(0, SeekOrigin.Begin);
+            await Channel.SendMessageAsync(new DiscordMessageBuilder()
+                .WithFile($"nedordle_{Id}_result.png", generated));
+
+            await Channel.SendMessageAsync(BuildResult(Players.First().Value));
             await OnEnd();
             return;
         }

@@ -19,20 +19,22 @@ public class Create : ExtendedCommandModule
     {
         await ctx.DeferAsync(true);
 
-        if (GameDatabaseHelper.UserIsInGame(ctx.Guild.Id))
+        if (GameDatabaseHelper.UserIsInGame(ctx.User.Id))
         {
             await ctx.EditResponseAsync(new DiscordWebhookBuilder()
                 .AddEmbed(SimpleDiscordEmbed.Error(Locale.UserInGame)));
             return;
         }
-
-        if (!GuildDatabaseHelper.GuildExists(ctx.Guild.Id))
-        {
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder()
-                .AddEmbed(SimpleDiscordEmbed.Warning(Locale.Fixing)));
-            Troubleshoot.FixGuild(ctx.Guild.Id);
-        }
-
+		
+	   if(ctx.Guild != null)
+	   {
+        	if (!GuildDatabaseHelper.GuildExists(ctx.Guild.Id))
+        	{
+            	await ctx.EditResponseAsync(new DiscordWebhookBuilder()
+            	    .AddEmbed(SimpleDiscordEmbed.Warning(Locale.Fixing)));
+            	Troubleshoot.FixGuild(ctx.Guild.Id);
+       	}
+	   }
         if (!UserDatabaseHelper.Exists(ctx.User.Id))
             Troubleshoot.FixUser(ctx.User.Id);
 
@@ -60,7 +62,7 @@ public class Create : ExtendedCommandModule
         if (attemptLimit == -2) return;
 
         bool dms;
-        if (ctx.Channel.IsPrivate || !GuildDatabaseHelper.GetAllowCreatingChannels(ctx.Guild.Id) || multiplayer)
+        if (ctx.Channel.IsPrivate || (ctx.Guild != null && !GuildDatabaseHelper.GetAllowCreatingChannels(ctx.Guild.Id)) || multiplayer)
         {
             dms = true;
         }
@@ -77,7 +79,7 @@ public class Create : ExtendedCommandModule
         var id = RandomExtensions.New().NextUpperString(10);
 
         DiscordChannel channel;
-        if (dms || !GuildDatabaseHelper.GetAllowCreatingChannels(ctx.Guild.Id))
+        if (dms || (ctx.Guild != null && !GuildDatabaseHelper.GetAllowCreatingChannels(ctx.Guild.Id)))
         {
             channel = ctx.Channel.IsPrivate ? ctx.Channel : await ctx.Member.CreateDmChannelAsync();
         }
@@ -263,8 +265,8 @@ public class Create : ExtendedCommandModule
     private IEnumerable<DiscordSelectComponentOption> GetAttemptLimitOptions()
     {
         var list = new List<DiscordSelectComponentOption>();
-        list.Add(SimpleOption(Locale.Custom));
-        list.Add(SimpleOption(Locale.Unlimited));
+        list.Add(new DiscordSelectComponentOption(Locale.Custom, "custom"));
+        list.Add(new DiscordSelectComponentOption(Locale.Unlimited, "unlimited"));
         for(var i = 2; i <= 15; i++)
             list.Add(SimpleOption(i.ToString()));
         return list;

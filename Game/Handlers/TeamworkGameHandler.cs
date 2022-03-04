@@ -16,7 +16,7 @@ public class TeamworkGameHandler: MultiplayerGameHandler
     public int AttemptLimit { get; init; }
     private string _answer = "";
     private int _current;
-    public List<Guess> Guesses { get; } = new();
+    public List<(Guess, string)> Guesses { get; } = new();
     
 
     public override Task OnCreate(DiscordUser creator, Locale locale)
@@ -136,9 +136,8 @@ public class TeamworkGameHandler: MultiplayerGameHandler
             await error.DeleteAsync();
             return;
         }
-
-        var guesses = Players.Select(x => x.Value.Guesses).SelectMany(x => x);
-        if (guesses.Any(x => x.Input == input))
+        
+        if (Guesses.Any(x => x.Item1.Input == input))
         {
             var error = await Channels[user.Id].SendMessageAsync(
                 SimpleDiscordEmbed.Error(Players[user.Id].Locale.GameAlreadyUsed));
@@ -148,18 +147,18 @@ public class TeamworkGameHandler: MultiplayerGameHandler
         }
         
         var (formatted, clean) = WordleStringComparer.Compare(input, _answer);
-        Guesses.Add(new Guess
+        Guesses.Add((new Guess
         {
             Input = input,
             CleanOutput = clean,
             FormattedOutput = formatted
-        });
+        }, user.Username));
         
         _current++;
         if (_current >= Players.Count) _current = 0;
         var nextUser = Players.Values.ToList()[_current];
 
-        var stream = WordleDrawer.Generate(string.Join('\n', Guesses.Select(x => x.FormattedOutput)), Players[nextUser.UserId].Theme);
+        var stream = WordleDrawer.Generate(string.Join('\n', Guesses.Select(x => x.Item1.FormattedOutput)), Players[nextUser.UserId].Theme);
         stream.Seek(0, SeekOrigin.Begin);
         
         if (ResponseMessages.ContainsKey(user.Id) && ResponseMessages[user.Id] != null) await ResponseMessages[user.Id]!.DeleteAsync();

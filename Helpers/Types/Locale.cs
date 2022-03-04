@@ -39,6 +39,7 @@ public class Locale
     public string NotPermitted;
     public string CannotLeaveWhilePlaying;
     public string UserInGame;
+    public string NotInGame;
     public string NotSupported;
     public string GameNotFound;
     public string AlreadyStarted;

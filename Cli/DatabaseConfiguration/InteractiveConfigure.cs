@@ -79,10 +79,11 @@ public static class InteractiveConfigure
         var exists = File.Exists("database.db");
         if (exists)
         {
-            var recreate =
-                AnsiConsole.Confirm(
-                    "The database already exists. Would you like to recreate it? (THIS WILL ERASE GUILDS AND PLAYERS AS WELL!)");
-            if (recreate)
+            var action = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .Title("The database already exists. What would you like to do?")
+                .AddChoices("Only update the languages (i.e. dictionaries & locales) tables")
+                .AddChoices("Recreate the database entirely"));
+            if (action == "Recreate the database entirely")
             {
                 if (DatabaseController.Connection != null)
                     DatabaseController.Connection.Close();

@@ -72,12 +72,12 @@ public class EmojiResultBuilder
 
         string guessString;
         if (handler.AttemptLimit == -1 || guessCount < handler.AttemptLimit) guessString = guessCount.ToString();
-        else guessString = guesses.Last().CleanOutput.All(x => x == 'c') ? handler.AttemptLimit.ToString() : "X";
+        else guessString = guesses.Last().Item1.CleanOutput.All(x => x == 'c') ? handler.AttemptLimit.ToString() : "X";
         var theme = player.Theme;
         var str = $"Nedordle ({player.Locale.GameTypes["teamwork"].Name}) {guessString}/{(handler.AttemptLimit == -1 ? '∞' : handler.AttemptLimit.ToString())}\n\n";
         foreach (var guess in guesses)
         {
-            foreach (var c in guess.CleanOutput)
+            foreach (var c in guess.Item1.CleanOutput)
                 switch (c)
                 {
                     case 'w':
@@ -90,8 +90,8 @@ public class EmojiResultBuilder
                         str += theme.CorrectEmoji;
                         break;
                 }
-
-            str += '\n';
+            
+            str += $" ({guess.Item2})\n";
         }
 
         return str;

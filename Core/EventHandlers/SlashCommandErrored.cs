@@ -33,7 +33,7 @@ public class SlashCommandErrored
             {
                 ["COMMAND_NAME"] = e.Context.CommandName,
                 ["USER"] = e.Context.User.Id,
-                ["GUILD"] = e.Context.Guild.Id
+                ["GUILD"] = e.Context.Guild == null ? 0: e.Context.Guild.Id
             }
         };
         deserialized!.Add(error);

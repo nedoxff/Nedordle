@@ -10,14 +10,9 @@ public class ExtendedCommandModule : ApplicationCommandModule
 
     public override Task<bool> BeforeSlashExecutionAsync(InteractionContext ctx)
     {
-        Log.Debug("Trying to get locale for guild {GuildId}..", ctx.Guild.Id);
+        Log.Debug("Trying to get locale for user {UserId}..", ctx.User.Id);
         var locale = ctx.Interaction.Locale;
-        if (string.IsNullOrEmpty(locale))
-        {
-            Log.Debug("Guild was not in the database, using \"en\"");
-            Locale = Locale.Locales["en"];
-        }
-        else if (!Locale.Locales.Any(x => locale.StartsWith(x.Key)))
+        if (!Locale.Locales.Any(x => locale.StartsWith(x.Key)))
         {
             Log.Debug("Invalid locale \"{Locale}\", using \"en\"", locale);
             Locale = Locale.Locales["en"];
@@ -25,7 +20,7 @@ public class ExtendedCommandModule : ApplicationCommandModule
         else
         {
             var nedordleLocale = Locale.Locales.First(x => locale.StartsWith(x.Key)).Key;
-            Log.Debug("The language for this guild is \"{Locale}\"", nedordleLocale);
+            Log.Debug("The language for this user is \"{Locale}\"", nedordleLocale);
             Locale = Locale.Locales[nedordleLocale];
         }
 

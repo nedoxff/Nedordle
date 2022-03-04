@@ -51,7 +51,11 @@ public class Client
 
         var slash = _client.UseSlashCommands();
         slash.SlashCommandErrored += SlashCommandErrored.OnSlashCommandErrored;
-        slash.RegisterCommands(Assembly.GetAssembly(typeof(Ping)), ulong.Parse(config["GUILD_ID"]));
+        
+        if(config.Contains("GUILD_ID"))
+            slash.RegisterCommands(Assembly.GetExecutingAssembly(), ulong.Parse(config["GUILD_ID"]));
+        else
+            slash.RegisterCommands(Assembly.GetExecutingAssembly());
         Log.Information("Initialized slash commands");
 
         _client.UseInteractivity();

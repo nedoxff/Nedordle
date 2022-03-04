@@ -10,7 +10,7 @@ public static class MessageCreated
 {
     public static async Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
     {
-        var game = GameDatabaseHelper.GetGameFromInput(e.Channel, e.Author);
+        var game = GameDatabaseHelper.GetGameFromUser(e.Author);
         if (!string.IsNullOrEmpty(game))
         {
             Log.Debug("Detected input for game with ID {GameId} from {UserId} ({Username})", game, e.Author.Id,

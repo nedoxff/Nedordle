@@ -19,7 +19,7 @@ public class GameDatabaseHelper
             handler.Language, info);
     }
 
-    public static string GetGameFromInput(DiscordChannel channel, DiscordUser user)
+    public static string GetGameFromUser(DiscordUser user)
     {
         var reader =
             DatabaseController.ExecuteReader("select distinct id, players from games");
